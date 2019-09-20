@@ -1,16 +1,18 @@
 function Sprite (x, y) {
     this.x = x;
     this.y = y;
-    this.xVelocity = 5;
+    this.xVelocity = 7;
     this.yVelocity = 0;
+    this.jumpForce = 15;
     this.SIZE = 39;
     this.GUARD = 0.0001;
     this.canJump = false;
+    this.jumping = false;
     this.dead = false;
     
     this.jump = function () {
         if (this.canJump) {
-            this.yVelocity = -15;
+            this.yVelocity = -this.jumpForce;
             this.canJump = false;
         }
     }
@@ -59,7 +61,7 @@ function Sprite (x, y) {
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         
-        this.xVelocity = 5;
+        this.xVelocity = 7;
         this.draw(camera);
     }
 }

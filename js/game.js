@@ -7,15 +7,16 @@ function pageLoad () {
 
 function resizeCanvas () {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight * 0.8;
+    canvas.height = window.innerHeight * 0.8;   // reflects value of CSS for square resolution
 }
 
 
-var physics;
+var physics = {gravity: 0.98};
 var sprite;
 var blocks;
 var camera;
 var animationID;
+var gameRunning = false;
 
 
 window.addEventListener("resize", resizeCanvas);
@@ -24,7 +25,6 @@ window.addEventListener("keydown", (event) => {
 });
 
 function initializeWorld () {
-    physics = {gravity: 0.9};
     sprite = new Sprite(116, 380);
     blocks = [];
     camera = new Camera(sprite);
