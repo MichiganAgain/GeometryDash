@@ -11,9 +11,10 @@ function resizeCanvas () {
 }
 
 
-var physics = {gravity: 0.98};
+const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 20};
 var sprite;
 var blocks;
+var gravityPoints;
 var text;
 var camera;
 var animationID;
@@ -29,17 +30,15 @@ window.addEventListener("keyup", (event) => {
 });
 
 function initializeWorld () {
-    sprite = new Sprite(100, 380);
+    sprite = new Sprite(700, 380);
     blocks = [];
+    gravityPoints = [new GravityPoint(700, 100, 30, 70000000000000), new GravityPoint(1700, 211, 30, 70000000000000)];
     text = [];
     camera = new Camera(sprite);
     
-    for (let i = 0; i < 500; i++) {
-        blocks.push(new Block(i * 40 + 200, 500));
-        blocks.push(new Block(i * 40 + 200, 200));
-    }
+    for (let i = 0; i < 500; i++) blocks.push(new Block(i * 40 + 200, 500));
     
-    text.push(new Text("HOW FAR CAN YOU GET XD", 1500, 200, 100, null));
+    text.push(new Text("I am so bored right now I just want to have sex", 1500, 200, 100, null));
     animate();
 }
 
@@ -48,8 +47,9 @@ function animate () {
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
-    sprite.update(physics, camera, blocks);
+    sprite.update(physics, camera, blocks, gravityPoints);
     for (let block of blocks) block.update(physics, camera);
+    for (let point of gravityPoints) point.update(camera);
     for (let t of text) t.update(camera);
     camera.update();
     

@@ -3,7 +3,8 @@ function Sprite (x, y) {
     this.y = y;
     this.xVelocity = 0;
     this.yVelocity = 0;
-    this.movingVelocity = 8;
+    this.movingVelocity = 4;
+    this.mass = 10;
     this.jumpForce = 15;
     this.SIZE = 39;
     this.GUARD = 0.0001;
@@ -48,14 +49,40 @@ function Sprite (x, y) {
         }
     }
     
+    this.feelGravityEffects = function (physics, gravityPoints) {
+        this.yVelocity += physics.gravity;
+        
+        for (let point of gravityPoints) {
+            let xDiff = point.x - this.x + this.SIZE;
+            let yDiff = point.y - this.y + this.SIZE;
+            let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
+            let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint**2);
+            
+            let theta = Math.atan2(yDiff, xDiff);
+            this.xVelocity += force * (xDiff / distanceFromPoint);
+            this.yVelocity += force * (yDiff / distanceFromPoint);
+        }
+    }
+    
+    this.adjustToMaximumVelocity = function () {
+        let currentVelocity = Math.sqrt(this.xVelocity**2 + this.yVelocity**2);
+        if (currentVelocity > physics.maxVelocity) {
+            let newVelocityX, newVelocityY;
+            let currentRatio = this.xVelocity / this.yVelocity;
+            
+        }
+    }
+    
     this.draw = function (camera) {
         context.fillStyle = "#555555";
         context.fillRect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
         context.stroke();
     }
     
-    this.update = function (physics, camera, blocks) {
-        this.yVelocity += physics.gravity;
+    this.update = function (physics, camera, blocks, gravityPoints) {
+        this.xVelocity = this.movingVelocity;
+        this.feelGravityEffects(physics, gravityPoints);
+        this.adjustToMaximumVelocity(physics);
         if (this.jumping && this.canJump) this.jump();
         
         this.checkBlockCollisions(blocks);
@@ -63,7 +90,6 @@ function Sprite (x, y) {
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         
-        this.xVelocity = this.movingVelocity;
         this.draw(camera);
     }
 }

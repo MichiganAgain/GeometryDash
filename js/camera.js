@@ -4,8 +4,8 @@ function Camera (trackedObject) {
     this.yOffset = 0;
     
     this.update = function () {
-        this.xOffset = ((canvas.width / 2) - this.trackedObject.x) - canvas.width / 4;
-        this.yOffset = this.findOffsetY(this.trackedObject.x);
+        this.xOffset = ((canvas.width / 2) - this.trackedObject.x) - (trackedObject.SIZE / 2);
+        this.yOffset = 0;
     }
     
     this.findOffsetY = function (x) {
