@@ -1,7 +1,7 @@
 function Block (x, y) {
     this.x = x;
     this.y = y;
-    this.SIZE = 45;
+    this.SIZE = 40;
     
     this.draw = function (camera) {
         context.fillStyle = "#111111";

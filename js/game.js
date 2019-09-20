@@ -14,6 +14,7 @@ function resizeCanvas () {
 var physics = {gravity: 0.98};
 var sprite;
 var blocks;
+var text;
 var camera;
 var animationID;
 var gameRunning = false;
@@ -21,33 +22,40 @@ var gameRunning = false;
 
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("keydown", (event) => {
-    if (event.key == " ") sprite.jump();
+    if (gameRunning && event.key == " ") sprite.jumping = true;
+});
+window.addEventListener("keyup", (event) => {
+    if (gameRunning && event.key == " ") sprite.jumping = false;
 });
 
 function initializeWorld () {
-    sprite = new Sprite(116, 380);
+    sprite = new Sprite(100, 380);
     blocks = [];
+    text = [];
     camera = new Camera(sprite);
     
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 500; i++) {
         blocks.push(new Block(i * 40 + 200, 500));
         blocks.push(new Block(i * 40 + 200, 200));
-        if (i % 10 == 0) blocks.push(new Block(i * 40 + 200, 455));
     }
     
+    text.push(new Text("HOW FAR CAN YOU GET XD", 1500, 200, 100, null));
     animate();
 }
 
 function animate () {
+    gameRunning = true;
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     sprite.update(physics, camera, blocks);
     for (let block of blocks) block.update(physics, camera);
+    for (let t of text) t.update(camera);
     camera.update();
     
     if (sprite.dead) {
         cancelAnimationFrame(animationID);
+        gameRunning = false;
         initializeWorld();
     }
 }

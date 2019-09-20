@@ -1,8 +1,9 @@
 function Sprite (x, y) {
     this.x = x;
     this.y = y;
-    this.xVelocity = 7;
+    this.xVelocity = 0;
     this.yVelocity = 0;
+    this.movingVelocity = 8;
     this.jumpForce = 15;
     this.SIZE = 39;
     this.GUARD = 0.0001;
@@ -55,13 +56,14 @@ function Sprite (x, y) {
     
     this.update = function (physics, camera, blocks) {
         this.yVelocity += physics.gravity;
+        if (this.jumping && this.canJump) this.jump();
         
         this.checkBlockCollisions(blocks);
         
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         
-        this.xVelocity = 7;
+        this.xVelocity = this.movingVelocity;
         this.draw(camera);
     }
 }
