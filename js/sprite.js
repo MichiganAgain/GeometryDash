@@ -3,8 +3,8 @@ function Sprite (x, y) {
     this.y = y;
     this.xVelocity = 0;
     this.yVelocity = 0;
-    this.movingVelocity = 4;
-    this.mass = 10;
+    this.movingVelocity = 0;
+    this.mass = 13;
     this.jumpForce = 15;
     this.SIZE = 39;
     this.GUARD = 0.0001;
@@ -53,10 +53,11 @@ function Sprite (x, y) {
         this.yVelocity += physics.gravity;
         
         for (let point of gravityPoints) {
-            let xDiff = point.x - this.x + this.SIZE;
-            let yDiff = point.y - this.y + this.SIZE;
+            let xDiff = point.x - this.x + (this.SIZE / 2);
+            let yDiff = point.y - this.y + (this.SIZE / 2);
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
             let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint**2);
+            if (force > 5) force = 5;
             
             let theta = Math.atan2(yDiff, xDiff);
             this.xVelocity += force * (xDiff / distanceFromPoint);
@@ -64,12 +65,11 @@ function Sprite (x, y) {
         }
     }
     
-    this.adjustToMaximumVelocity = function () {
+    this.adjustToMaximumVelocity = function (physics) {
         let currentVelocity = Math.sqrt(this.xVelocity**2 + this.yVelocity**2);
         if (currentVelocity > physics.maxVelocity) {
-            let newVelocityX, newVelocityY;
-            let currentRatio = this.xVelocity / this.yVelocity;
-            
+            this.xVelocity = (this.xVelocity / currentVelocity) * physics.maxVelocity;
+            this.yVelocity = (this.yVelocity / currentVelocity) * physics.maxVelocity;
         }
     }
     
