@@ -5,13 +5,13 @@ function Text (text, x, y, size, position) {
     this.size = size;
     this.position = position;
     
-    this.draw = function (camera) {
+    this.draw = function (context, camera) {
         context.font = this.size + "px Arial";
         context.fillText(this.text, this.x + ((this.position === "absolute") ? 0: camera.xOffset), this.y + ((this.position === "absolute") ? 0: camera.yOffset));
         context.strokeText(this.text, this.x + ((this.position === "absolute") ? 0: camera.xOffset), this.y + ((this.position === "absolute") ? 0: camera.yOffset));
     }
     
-    this.update = function (camera) {
-        this.draw(camera);
+    this.update = function (context, camera) {
+        this.draw(context, camera);
     }
 }

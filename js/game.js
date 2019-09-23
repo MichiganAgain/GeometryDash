@@ -11,7 +11,7 @@ function resizeCanvas () {
 }
 
 
-const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
+const physics = {gravity: 0.0, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
 var sprite;
 var blocks;
 var gravityPoints;
@@ -30,21 +30,20 @@ window.addEventListener("keyup", (event) => {
 });
 
 function initializeWorld () {
-    sprite = new Sprite(200, 460);
+    sprite = new Sprite(0, -400);
     blocks = [];
     gravityPoints = [];
     text = [];
-    camera = new Camera(sprite);
+    gravityPoints.push(new GravityPoint(0, 100, 70, 500000000000));
+    blocks.push(new Block(100, 100));
+    blocks.push(new Block(200, 100));
+    blocks.push(new Block(300, 100));
+    blocks.push(new Block(400, 100));
+    blocks.push(new Block(500, 100));
     
-    for (let i = 0; i < 100; i++) {
-        gravityPoints.push(new GravityPoint(i * 1000 + 1000, 200, 30, 500000000000));
-    }
-    for (let i = 0; i < 500; i++) {
-        blocks.push(new Block(i * 40 + 200, 500));
-    }
-    
-    text.push(new Text("Black HOLE ----->", 150, 235, 100, null));
-    text.push(new Text("<----- Black HOLE", 1055, 235, 100, null));
+    //text.push(new Text("Black HOLE ----->", 150, 235, 100, null));
+    //text.push(new Text("<----- Black HOLE", 1055, 235, 100, null));
+    camera = new Camera(gravityPoints[0]);
     animate();
 }
 
@@ -53,10 +52,10 @@ function animate () {
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
-    sprite.update(physics, camera, blocks, gravityPoints);
-    for (let block of blocks) block.update(physics, camera);
-    for (let point of gravityPoints) point.update(camera);
-    for (let t of text) t.update(camera);
+    sprite.update(context, physics, camera, blocks, gravityPoints);
+    for (let block of blocks) block.update(context, physics, camera);
+    for (let point of gravityPoints) point.update(context, camera);
+    for (let t of text) t.update(context, camera);
     camera.update();
     
     if (sprite.dead) {

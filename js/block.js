@@ -3,13 +3,13 @@ function Block (x, y) {
     this.y = y;
     this.SIZE = 40;
     
-    this.draw = function (camera) {
+    this.draw = function (context, camera) {
         context.fillStyle = "#111111";
         context.fillRect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
         context.stroke();
     }
     
-    this.update = function (physics, camera) {        
-        this.draw(camera);
+    this.update = function (context, physics, camera) {        
+        this.draw(context, camera);
     }
 }
