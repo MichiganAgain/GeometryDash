@@ -7,7 +7,6 @@ function Text (text, x, y, size, position) {
     
     this.draw = function (camera) {
         context.font = this.size + "px Arial";
-        context.strokeStyle = "#FFFF00";
         context.fillText(this.text, this.x + ((this.position === "absolute") ? 0: camera.xOffset), this.y + ((this.position === "absolute") ? 0: camera.yOffset));
         context.strokeText(this.text, this.x + ((this.position === "absolute") ? 0: camera.xOffset), this.y + ((this.position === "absolute") ? 0: camera.yOffset));
     }

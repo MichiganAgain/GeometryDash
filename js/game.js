@@ -11,7 +11,7 @@ function resizeCanvas () {
 }
 
 
-const physics = {gravity: 0, gravitationalConstant: 6.67408*(10**-1), maxVelocity: 50};
+const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
 var sprite;
 var blocks;
 var gravityPoints;
@@ -32,13 +32,19 @@ window.addEventListener("keyup", (event) => {
 function initializeWorld () {
     sprite = new Sprite(200, 460);
     blocks = [];
-    gravityPoints = [new GravityPoint(700, 200, 30, 70000), new GravityPoint(1000, 200, 30, 70000), new GravityPoint(850, 0, 30, 70000), new GravityPoint(850, 400, 30, 70000), new GravityPoint(1000, 100, 30, 70000)];
+    gravityPoints = [];
     text = [];
     camera = new Camera(sprite);
     
-    for (let i = 0; i < 500; i++) blocks.push(new Block(i * 40 + 200, 500));
+    for (let i = 0; i < 100; i++) {
+        gravityPoints.push(new GravityPoint(i * 1000 + 1000, 200, 30, 500000000000));
+    }
+    for (let i = 0; i < 500; i++) {
+        blocks.push(new Block(i * 40 + 200, 500));
+    }
     
-    text.push(new Text("I am so bored right now I just want to have", 1500, 200, 100, null));
+    text.push(new Text("Black HOLE ----->", 150, 235, 100, null));
+    text.push(new Text("<----- Black HOLE", 1055, 235, 100, null));
     animate();
 }
 

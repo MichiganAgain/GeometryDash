@@ -3,8 +3,8 @@ function Sprite (x, y) {
     this.y = y;
     this.xVelocity = 0;
     this.yVelocity = 0;
-    this.movingVelocity = 0;
-    this.mass = 13;
+    this.movingVelocity = 8;
+    this.mass = 10;
     this.jumpForce = 15;
     this.SIZE = 39;
     this.GUARD = 0.0001;
@@ -53,15 +53,18 @@ function Sprite (x, y) {
         this.yVelocity += physics.gravity;
         
         for (let point of gravityPoints) {
-            let xDiff = point.x - this.x + (this.SIZE / 2);
-            let yDiff = point.y - this.y + (this.SIZE / 2);
+            let xDiff = point.x - (this.x + (this.SIZE / 2));
+            let yDiff = point.y - (this.y + (this.SIZE / 2));
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
-            let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint**2);
-            if (force > 5) force = 5;
             
-            let theta = Math.atan2(yDiff, xDiff);
-            this.xVelocity += force * (xDiff / distanceFromPoint);
-            this.yVelocity += force * (yDiff / distanceFromPoint);
+            if (distanceFromPoint > point.radius && distanceFromPoint < point.radius * 25) {
+                let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
+
+                let theta = Math.atan2(yDiff, xDiff);
+                this.xVelocity += force * Math.cos(theta);
+                this.yVelocity += force * Math.sin(theta);
+            }
+            else if (distanceFromPoint < point.radius) this.dead = true;
         }
     }
     
@@ -81,9 +84,9 @@ function Sprite (x, y) {
     
     this.update = function (physics, camera, blocks, gravityPoints) {
         this.xVelocity = this.movingVelocity;
+        if (this.jumping && this.canJump) this.jump();
         this.feelGravityEffects(physics, gravityPoints);
         this.adjustToMaximumVelocity(physics);
-        if (this.jumping && this.canJump) this.jump();
         
         this.checkBlockCollisions(blocks);
         
