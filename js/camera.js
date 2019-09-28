@@ -2,11 +2,12 @@ function Camera (trackedObject) {
     this.trackedObject = trackedObject;
     this.xOffset = ((canvas.width / 2) - this.trackedObject.x) - canvas.width / 4;
     this.yOffset = 0;
+    this.zoom = 1;
     
     this.update = function () {
         this.xOffset = ((canvas.width / 2) - this.trackedObject.x) - (trackedObject.SIZE / 2);
-        //this.yOffset = this.findOffsetY(trackedObject.x);
-        this.yOffset = ((canvas.height / 2) - this.trackedObject.y) - (trackedObject.SIZE / 2);
+        this.yOffset = this.findOffsetY(trackedObject.x) + ((canvas.height / 2) - this.trackedObject.y) - (trackedObject.SIZE / 2);
+        //this.yOffset = ((canvas.height / 2) - this.trackedObject.y) - (trackedObject.SIZE / 2);
     }
     
     this.findOffsetY = function (x) {

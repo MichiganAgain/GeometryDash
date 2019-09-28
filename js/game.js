@@ -7,11 +7,11 @@ function pageLoad () {
 
 function resizeCanvas () {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight * 0.8;   // reflects value of CSS for square resolution
+    canvas.height = window.innerHeight * 1;   // reflects value of CSS for square resolution
 }
 
 
-const physics = {gravity: 0.0, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
+const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
 var sprite;
 var blocks;
 var gravityPoints;
@@ -30,20 +30,22 @@ window.addEventListener("keyup", (event) => {
 });
 
 function initializeWorld () {
-    sprite = new Sprite(0, -400);
+    sprite = new Sprite(0, -200);
     blocks = [];
     gravityPoints = [];
     text = [];
-    gravityPoints.push(new GravityPoint(0, 100, 70, 500000000000));
-    blocks.push(new Block(100, 100));
-    blocks.push(new Block(200, 100));
-    blocks.push(new Block(300, 100));
-    blocks.push(new Block(400, 100));
-    blocks.push(new Block(500, 100));
+    for (let i = 0; i < 1000; i++) {
+        blocks.push(new Block(i * 40, 100));
+        if (i % 20 == 0) {
+            blocks.push(new Block(i * 40, 60));
+            blocks.push(new Block(i * 40, 20));
+            blocks.push(new Block(i * 40, -100));
+        }
+    }
+    gravityPoints.push(new GravityPoint(0, -300, 50, 10000000000));
+    gravityPoints.push(new GravityPoint(1000, -300, 50, 100000000000));
     
-    //text.push(new Text("Black HOLE ----->", 150, 235, 100, null));
-    //text.push(new Text("<----- Black HOLE", 1055, 235, 100, null));
-    camera = new Camera(gravityPoints[0]);
+    camera = new Camera(sprite);
     animate();
 }
 
