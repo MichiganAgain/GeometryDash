@@ -18,7 +18,7 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
             if (distanceFromPoint <= point.radius - this.radius) {
                 this.dead = true
                 point.radius++;
-                //point.mass += 1000000000
+                point.mass += 5000000000
             }
 
             let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);

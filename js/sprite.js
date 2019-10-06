@@ -81,7 +81,7 @@ function Sprite (x, y) {
     }
     
     this.update = function (context, physics, camera, blocks, gravityPoints) {
-        if (this.canJump) this.xVelocity = this.movingVelocity;
+        //if (this.canJump) this.xVelocity = this.movingVelocity;
         if (this.jumping && this.canJump) this.jump();
         this.feelGravityEffects(physics, gravityPoints);
         this.adjustToMaximumVelocity(physics);
