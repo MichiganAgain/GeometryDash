@@ -11,7 +11,7 @@ function resizeCanvas () {
 }
 
 
-const physics = {gravity: 0.0, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
+const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
 var sprite;
 var particles;
 var blocks;
@@ -30,30 +30,54 @@ window.addEventListener("keyup", (event) => {
     if (gameRunning && event.key == " ") sprite.jumping = false;
 });
 
+function particleCollisions (particles) {
+    for (let i = 0; i < particles.length; i++) {
+        for (let x = i + 1; x < particles.length; x++) {
+            let distance = Math.sqrt((particles[i].x - particles[x].x)**2 + (particles[i].y - particles[x].y)**2);
+            if (distance < particles[i].radius + particles[x].radius) { // then a collision has happened
+                const unitX = (particles[i].x - particles[x].x) / distance;
+                const unitY = (particles[i].y - particles[x].y) / distance;
+                
+                particles[i].x += unitX * distance / 2;
+                particles[i].y += unitY * distance / 2;
+                particles[x].x -= unitX * distance / 2;
+                particles[x].y -= unitY * distance / 2;
+                
+                const dp1 = (particles[i].xVelocity) * unitX + (particles[i].yVelocity * unitY);
+                const dp2 = (particles[x].xVelocity) * unitX + (particles[x].yVelocity * unitY);
+                
+                particles[i].xVelocity -= unitX * dp1;
+                particles[i].yVelocity -= unitY * dp1;
+                particles[x].xVelocity -= unitX * dp2;
+                particles[x].yVelocity -= unitY * dp2;
+            }
+        }
+    }
+}
+
 function initializeWorld () {
-    sprite = new Sprite(0, -100);
+    sprite = new Sprite(-840, 60);
     particles = [];
     blocks = [];
     gravityPoints = [];
     text = [];
     
-    for (let i = 0; i < 10; i++) particles.push(new Particle(-300, i * -30 + 60, 5, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(-1000, i * -30 + 120, 0, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(-800, i * -30 + 120, 0, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(-600, i * -30 + 120, 0, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(0, i * -30 + 120, 0, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(1000, i * -30 + 120, 0, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(800, i * -30 + 120, 0, 0, 10));
+    for (let i = 0; i < 9; i++) particles.push(new Particle(600, i * -30 + 120, 0, 0, 10));
     
-    for (let i = 0; i < 1000; i++) {
+    for (let i = -40; i < 40; i++) {
         blocks.push(new Block(i * 40, 100));
-        if (i % 20 == 0) {
-            //blocks.push(new Block(i * 40, 60));
-            //blocks.push(new Block(i * 40, 20));
-            //blocks.push(new Block(i * 40, -100));
-        }
     }
     gravityPoints.push(new GravityPoint(0, -300, 50, 90000000000));
-    gravityPoints.push(new GravityPoint(0, 300, 50, 90000000000));
+    //gravityPoints.push(new GravityPoint(0, 300, 50, 90000000000));
+    //gravityPoints.push(new GravityPoint(500, 300, 50, 90000000000));
     
-    text.push(new Text("Black Hole", -120, -400, 50, null));
-    text.push(new Text("Black Hole", -120, 200, 50, null));
-    
-    camera = new Camera(canvas, gravityPoints[0]);
+    camera = new Camera(canvas, sprite);
     animate();
 }
 
@@ -64,7 +88,12 @@ function animate () {
     
     for (let t of text) t.update(context, camera);
     sprite.update(context, physics, camera, blocks, gravityPoints);
+    particleCollisions(particles);
     for (let particle of particles) particle.update(context, physics, camera);
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update(context, physics, camera);
+        if (particles[i].dead) particles.splice(i, 1);
+    }
     for (let block of blocks) block.update(context, physics, camera);
     for (let point of gravityPoints) point.update(context, camera);
     camera.update(canvas);

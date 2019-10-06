@@ -4,15 +4,22 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
     this.xVelocity = xVelocity;
     this.yVelocity = yVelocity;
     this.radius = radius;
+    this.SIZE = 0;  // so it can be tracked by the camera  should really replace this with parent class / interface tbh
     this.mass = this.radius;
+    this.dead = false;
     
     this.feelGravityEffects = function (physics, gravityPoints) {
-        this.yVelocity += physics.gravity;
+        //this.yVelocity += physics.gravity;
         
         for (let point of gravityPoints) {
             let xDiff = point.x - this.x;
             let yDiff = point.y - this.y;
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
+            if (distanceFromPoint <= point.radius - this.radius) {
+                this.dead = true
+                point.radius++;
+                //point.mass += 1000000000
+            }
 
             let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
             let theta = Math.atan2(yDiff, xDiff);

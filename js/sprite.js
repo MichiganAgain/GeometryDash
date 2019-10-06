@@ -2,8 +2,8 @@ function Sprite (x, y) {
     this.x = x;
     this.y = y;
     this.xVelocity = 5;
-    this.yVelocity = -5;
-    this.movingVelocity = 8;
+    this.yVelocity = 0;
+    this.movingVelocity = 5;
     this.mass = 10;
     this.jumpForce = 15;
     this.SIZE = 39;
