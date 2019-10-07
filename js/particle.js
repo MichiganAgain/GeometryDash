@@ -8,8 +8,33 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
     this.mass = this.radius;
     this.dead = false;
     
+    this.checkBlockCollisions = function (blocks) {
+        for (let block of blocks) {
+            if (this.x + this.radius >= block.x && this.x - this.radius <= block.x + block.SIZE) {
+                if (this.y + this.radius <= block.y && this.y + this.radius + this.yVelocity >= block.y) {  // top collision
+                    this.yVelocity = 0;
+                    this.y = block.y - this.radius;
+                }
+                if (this.y - this.radius >= block.y + block.SIZE && this.y - this.radius + this.yVelocity <= block.y + block.SIZE) {    // bottom collision
+                    this.yVelocity = 0;
+                    this.y = block.y + block.SIZE + this.radius;
+                }
+            }
+            if (this.y + this.radius >= block.y && this.y - this.radius <= block.y + block.SIZE) {
+                if (this.x + this.radius <= block.x && this.x + this.radius + this.xVelocity >= block.x) {   // left collision
+                    this.xVelocity = 0;
+                    this.x = block.x - this.radius;
+                }
+                if (this.x - this.radius >= block.x + block.SIZE && this.x - this.radius + this.xVelocity <= block.x + block.xVelocity) {   // right collision
+                    this.xVelocity = 0;
+                    this.x = block.x + block.SIZE + this.radius;
+                }
+            }
+        }
+    }
+    
     this.feelGravityEffects = function (physics, gravityPoints) {
-        //this.yVelocity += physics.gravity;
+        this.yVelocity += physics.gravity;
         
         for (let point of gravityPoints) {
             let xDiff = point.x - this.x;
@@ -48,7 +73,7 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
         this.feelGravityEffects(physics, gravityPoints);
         this.adjustToMaximumVelocity(physics);
         
-        //this.checkBlockCollisions(blocks);
+        this.checkBlockCollisions(blocks);
         
         this.x += this.xVelocity;
         this.y += this.yVelocity;

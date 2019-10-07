@@ -88,12 +88,13 @@ function animate () {
     
     for (let t of text) t.update(context, camera);
     sprite.update(context, physics, camera, blocks, gravityPoints);
+    
     particleCollisions(particles);
-    for (let particle of particles) particle.update(context, physics, camera);
     for (let i = 0; i < particles.length; i++) {
         particles[i].update(context, physics, camera);
         if (particles[i].dead) particles.splice(i, 1);
     }
+    
     for (let block of blocks) block.update(context, physics, camera);
     for (let point of gravityPoints) point.update(context, camera);
     camera.update(canvas);
