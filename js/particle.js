@@ -34,7 +34,7 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
     }
     
     this.feelGravityEffects = function (physics, gravityPoints) {
-        this.yVelocity += physics.gravity;
+        //this.yVelocity += physics.gravity;
         
         for (let point of gravityPoints) {
             let xDiff = point.x - this.x;
@@ -42,7 +42,7 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
             if (distanceFromPoint <= point.radius - this.radius) {
                 this.dead = true
-                point.radius++;
+                point.radius += 0.5;
                 point.mass += 5000000000
             }
 

@@ -1,7 +1,7 @@
 function Sprite (x, y) {
     this.x = x;
     this.y = y;
-    this.xVelocity = 5;
+    this.xVelocity = 10;
     this.yVelocity = 0;
     this.movingVelocity = 5;
     this.mass = 10;
@@ -90,7 +90,8 @@ function Sprite (x, y) {
         
         this.x += this.xVelocity;
         this.y += this.yVelocity;
-        
+        this.x = -19.5;
+	this.y = -19.5 + 200;
         this.draw(context, camera);
     }
 }

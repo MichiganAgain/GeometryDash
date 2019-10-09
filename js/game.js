@@ -11,7 +11,7 @@ function resizeCanvas () {
 }
 
 
-const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
+const physics = {gravity: 0.0, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 100};
 var sprite;
 var particles;
 var blocks;
@@ -56,22 +56,22 @@ function particleCollisions (particles) {
 }
 
 function initializeWorld () {
-    sprite = new Sprite(-840, 60);
+    sprite = new Sprite(-19.5, 600);
     particles = [];
     blocks = [];
     gravityPoints = [];
     text = [];
-    
-    for (let i = 0; i < 9; i++) particles.push(new Particle(-1000, i * -30 + 120, 0, 0, 10));
-    for (let i = 0; i < 9; i++) particles.push(new Particle(-800, i * -30 + 120, 0, 0, 10));
-    for (let i = 0; i < 9; i++) particles.push(new Particle(-600, i * -30 + 120, 0, 0, 10));
-    for (let i = 0; i < 9; i++) particles.push(new Particle(0, i * -30 + 120, 0, 0, 10));
-    for (let i = 0; i < 9; i++) particles.push(new Particle(1000, i * -30 + 120, 0, 0, 10));
-    for (let i = 0; i < 9; i++) particles.push(new Particle(800, i * -30 + 120, 0, 0, 10));
-    for (let i = 0; i < 9; i++) particles.push(new Particle(600, i * -30 + 120, 0, 0, 10));
+
+    for (let i = 0; i < 9; i++) particles.push(new Particle(600, i * -30 + 120, 0, 0, 3));
+
+	for (let i = -5000; i <= 5000; i += 200) {
+		for (let y = 120; y > -270; y -= 30) {
+			particles.push(new Particle(i, y, 0, 3, 7));
+		}
+	}
     
     for (let i = -40; i < 40; i++) {
-        blocks.push(new Block(i * 40, 100));
+        //blocks.push(new Block(i * 40, 100));
     }
     gravityPoints.push(new GravityPoint(0, -300, 50, 90000000000));
     //gravityPoints.push(new GravityPoint(0, 300, 50, 90000000000));
