@@ -25,7 +25,7 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
                     this.xVelocity = 0;
                     this.x = block.x - this.radius;
                 }
-                if (this.x - this.radius >= block.x + block.SIZE && this.x - this.radius + this.xVelocity <= block.x + block.xVelocity) {   // right collision
+                if (this.x - this.radius >= block.x + block.SIZE && this.x - this.radius + this.xVelocity <= block.x + block.SIZE) {   // right collision
                     this.xVelocity = 0;
                     this.x = block.x + block.SIZE + this.radius;
                 }
@@ -42,8 +42,8 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
             if (distanceFromPoint <= point.radius - this.radius) {
                 this.dead = true
-                point.radius += 0.5;
-                point.mass += 5000000000
+                point.radius += this.radius / 15;
+                point.mass += 50000000000000
             }
 
             let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);

@@ -1,7 +1,7 @@
 function Sprite (x, y) {
     this.x = x;
     this.y = y;
-    this.xVelocity = 10;
+    this.xVelocity = 0;
     this.yVelocity = 0;
     this.movingVelocity = 5;
     this.mass = 10;
@@ -31,19 +31,19 @@ function Sprite (x, y) {
                 if (this.y >= block.y + block.SIZE && this.y + this.yVelocity <= block.y + block.SIZE) {   // bottom collision
                     this.yVelocity = 0;
                     this.y = block.y + block.SIZE;
-                    this.dead = true;
+                    this.dead = false;
                 }
             }
             if (this.y + this.SIZE >= block.y && this.y <= block.y + block.SIZE) {
                 if (this.x + this.SIZE <= block.x && this.x + this.SIZE + this.xVelocity >= block.x) {  // left collision
                     this.xVelocity = 0;
                     this.x = block.x - this.SIZE;
-                    this.dead = true;
+                    this.dead = false;
                 }
                 if (this.x >= block.x + block.SIZE && this.x + this.xVelocity <= block.x + block.SIZE) {    // right collision
                     this.xVelocity = 0;
                     this.x = block.x + block.SIZE;
-                    this.dead = true;
+                    this.dead = false;
                 }
             }
         }
@@ -91,7 +91,7 @@ function Sprite (x, y) {
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         this.x = -19.5;
-	this.y = -19.5 + 200;
+        this.y = -19.5 + 200;
         this.draw(context, camera);
     }
 }
