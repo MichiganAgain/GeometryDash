@@ -2,6 +2,7 @@ function Block (x, y) {
     this.x = x;
     this.y = y;
     this.SIZE = 40;
+    this.friction = 1.03;
     
     this.draw = function (context, camera) {
         context.fillStyle = "#111111";

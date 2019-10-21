@@ -11,7 +11,7 @@ function resizeCanvas () {
 }
 
 
-const physics = {gravity: 0.0, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 10};
+const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
 var sprite;
 var particles;
 var blocks;
@@ -21,13 +21,26 @@ var camera;
 var animationID;
 var gameRunning = false;
 
-
 window.addEventListener("resize", resizeCanvas);
+window.addEventListener("click", function shoot (event) {
+    let mouseX = event.clientX - camera.xOffset;
+    let mouseY = event.clientY - camera.yOffset;
+    let xDiff = mouseX - sprite.x;
+    let yDiff = mouseY - sprite.y;
+    //let power = Math.sqrt(xDiff**2 + yDiff**2);
+    let power = 10;
+    let theta = Math.atan2(yDiff, xDiff);
+    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 2, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, "#FF0000"));
+});
 window.addEventListener("keydown", (event) => {
-    if (gameRunning && event.key == " ") sprite.jumping = true;
+    if (gameRunning && (event.key === " " || event.key === "w")) sprite.jumping = true;
+    if (gameRunning && event.key === "a") sprite.movingLeft = true;
+    if (gameRunning && event.key === "d") sprite.movingRight = true;
 });
 window.addEventListener("keyup", (event) => {
-    if (gameRunning && event.key == " ") sprite.jumping = false;
+    if (gameRunning && (event.key === " " || event.key === "w")) sprite.jumping = false;
+    if (gameRunning && event.key === "a") sprite.movingLeft = false;
+    if (gameRunning && event.key === "d") sprite.movingRight = false;
 });
 
 function particleCollisions (particles) {
@@ -56,27 +69,30 @@ function particleCollisions (particles) {
 }
 
 function initializeWorld () {
-    sprite = new Sprite(-19.5, 0);
+    sprite = new Sprite(-19.5, 140);
     particles = [];
     blocks = [];
     gravityPoints = [];
     text = [];
 
-	for (let i = -5000; i <= 5000; i += 200) {
+	for (let i = -3000; i <= 3000; i += 200) {
 		for (let y = 120; y > -270; y -= 30) {
-			particles.push(new Particle(i, y, 0, 0, 3));
+			particles.push(new Particle(i, y, 0, 0, 10, "#0000FF"));
 		}
 	}
     
     blocks.push(new Block(-40, 100));
     blocks.push(new Block(0, 100));
     blocks.push(new Block(40, 100));
-    for (let i = -40; i < 40; i++) {
-        //blocks.push(new Block(i * 40, 100));
-    }
-    gravityPoints.push(new GravityPoint(1000, -300, 50, 90000000000));
-    //gravityPoints.push(new GravityPoint(0, 300, 50, 90000000000));
+    blocks.push(new Block(40, 60));
+    blocks.push(new Block(40, 20));
+    for (let i = -40; i < 30; i++) blocks.push(new Block(i * 40, 220));
+    for (let i = 0; i < 20; i++) blocks.push(new Block(40, 40 * -i));
+    gravityPoints.push(new GravityPoint(1000, -300, 50, 50000000000));
+    gravityPoints.push(new GravityPoint(-300, 300, 50, 90000000000));
     //gravityPoints.push(new GravityPoint(500, 300, 50, 90000000000));
+    text.push(new Text("GRANDMA SAY GO THIS WAY ->", 100, 100, 50, null));
+    
     
     camera = new Camera(canvas, sprite);
     animate();
@@ -88,13 +104,13 @@ function animate () {
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     for (let t of text) t.update(context, camera);
-    sprite.update(context, physics, camera, blocks, gravityPoints);
     
     particleCollisions(particles);
     for (let i = 0; i < particles.length; i++) {
         particles[i].update(context, physics, camera);
         if (particles[i].dead) particles.splice(i, 1);
     }
+    sprite.update(context, physics, camera, blocks, gravityPoints);
     
     for (let block of blocks) block.update(context, physics, camera);
     for (let point of gravityPoints) point.update(context, camera);

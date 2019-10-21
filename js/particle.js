@@ -1,10 +1,12 @@
-function Particle (x, y, xVelocity, yVelocity, radius) {
+function Particle (x, y, xVelocity, yVelocity, radius, color) {
     this.x = x;
     this.y = y;
     this.xVelocity = xVelocity;
     this.yVelocity = yVelocity;
     this.radius = radius;
+    this.color = color;
     this.SIZE = 0;  // so it can be tracked by the camera  should really replace this with parent class / interface tbh
+    this.GUARD = 0.0001;
     this.mass = this.radius;
     this.dead = false;
     
@@ -12,22 +14,22 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
         for (let block of blocks) {
             if (this.x + this.radius >= block.x && this.x - this.radius <= block.x + block.SIZE) {
                 if (this.y + this.radius <= block.y && this.y + this.radius + this.yVelocity >= block.y) {  // top collision
-                    this.yVelocity = 0;
-                    this.y = block.y - this.radius;
+                    this.yVelocity *= -0.8;
+                    this.y = block.y - this.radius - this.GUARD;
                 }
                 if (this.y - this.radius >= block.y + block.SIZE && this.y - this.radius + this.yVelocity <= block.y + block.SIZE) {    // bottom collision
-                    this.yVelocity = 0;
-                    this.y = block.y + block.SIZE + this.radius;
+                    this.yVelocity *= -0.8;
+                    this.y = block.y + block.SIZE + this.radius + this.GUARD;
                 }
             }
             if (this.y + this.radius >= block.y && this.y - this.radius <= block.y + block.SIZE) {
                 if (this.x + this.radius <= block.x && this.x + this.radius + this.xVelocity >= block.x) {   // left collision
-                    this.xVelocity = 0;
-                    this.x = block.x - this.radius;
+                    this.xVelocity *= -0.8;
+                    this.x = block.x - this.radius - this.GUARD;
                 }
                 if (this.x - this.radius >= block.x + block.SIZE && this.x - this.radius + this.xVelocity <= block.x + block.SIZE) {   // right collision
-                    this.xVelocity = 0;
-                    this.x = block.x + block.SIZE + this.radius;
+                    this.xVelocity *= -0.8;
+                    this.x = block.x + block.SIZE + this.radius + this.GUARD;
                 }
             }
         }
@@ -42,8 +44,8 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
             if (distanceFromPoint <= point.radius - this.radius) {
                 this.dead = true
-                point.radius += this.radius / 15;
-                point.mass += 50000000000000
+                point.radius += this.radius / 12;
+                point.mass += 1000000000;
             }
 
             let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
@@ -62,11 +64,12 @@ function Particle (x, y, xVelocity, yVelocity, radius) {
     }
     
     this.draw = function (context, camera) {
-        context.fillStyle = "#000000";
-        context.lineWidth = 0;
+        context.fillStyle = this.color;
+        context.lineWidth = 1;
         context.beginPath();
         context.arc(this.x + camera.xOffset, this.y + camera.yOffset, this.radius, 0, 2 * Math.PI, false);
         context.fill();
+        context.stroke();
     }
     
     this.update = function (context, physics, camera) {
