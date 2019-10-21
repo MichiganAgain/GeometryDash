@@ -28,9 +28,9 @@ window.addEventListener("click", function shoot (event) {
     let xDiff = mouseX - sprite.x;
     let yDiff = mouseY - sprite.y;
     //let power = Math.sqrt(xDiff**2 + yDiff**2);
-    let power = 10;
+    let power = 20;
     let theta = Math.atan2(yDiff, xDiff);
-    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 2, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, "#FF0000"));
+    particles.push(new Particle(sprite.x + sprite.SIZE / 2 - sprite.xVelocity, sprite.y + sprite.SIZE / 2 - sprite.yVelocity, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 15, true, "#FF0000"));
 });
 window.addEventListener("keydown", (event) => {
     if (gameRunning && (event.key === " " || event.key === "w")) sprite.jumping = true;
@@ -75,23 +75,18 @@ function initializeWorld () {
     gravityPoints = [];
     text = [];
 
-	for (let i = -3000; i <= 3000; i += 200) {
+	for (let i = -1000; i <= 1000; i += 200) {
 		for (let y = 120; y > -270; y -= 30) {
-			particles.push(new Particle(i, y, 0, 0, 10, "#0000FF"));
+			particles.push(new Particle(i, y, 0, 0, 10, false, "#00FFFF"));
 		}
 	}
-    
-    blocks.push(new Block(-40, 100));
-    blocks.push(new Block(0, 100));
-    blocks.push(new Block(40, 100));
-    blocks.push(new Block(40, 60));
-    blocks.push(new Block(40, 20));
     for (let i = -40; i < 30; i++) blocks.push(new Block(i * 40, 220));
-    for (let i = 0; i < 20; i++) blocks.push(new Block(40, 40 * -i));
-    gravityPoints.push(new GravityPoint(1000, -300, 50, 50000000000));
-    gravityPoints.push(new GravityPoint(-300, 300, 50, 90000000000));
-    //gravityPoints.push(new GravityPoint(500, 300, 50, 90000000000));
-    text.push(new Text("GRANDMA SAY GO THIS WAY ->", 100, 100, 50, null));
+    gravityPoints.push(new GravityPoint(0, -300, 50, 50000000000));
+
+    text.push(new Text("GO THIS WAY :D ->", -300, 100, 50, null, (t) => {
+        t = (t / 180) * Math.PI;
+        return 50 * Math.sin(t * 5);
+    }));
     
     
     camera = new Camera(canvas, sprite);
