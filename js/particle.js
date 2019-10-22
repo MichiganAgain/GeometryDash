@@ -10,6 +10,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.mass = this.radius;
     this.dead = false;
     this.lethal = lethal;
+    this.ttl = 300;
     
     this.checkBlockCollisions = function (blocks) {
         for (let block of blocks) {
@@ -81,6 +82,11 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         
         this.x += this.xVelocity;
         this.y += this.yVelocity;
+        
+        if (this.lethal) {
+            this.ttl--;
+            if (this.ttl <= 0) this.dead = true;
+        }
         
         this.draw(context, camera);
     }
