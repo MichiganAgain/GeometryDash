@@ -5,6 +5,7 @@ function GravityPoint (x, y, radius, mass) {
     this.SIZE = 0;  // so it can be tracked by the camera  should really replace this with parent class / interface tbh
     this.mass = mass;
     this.time = Math.floor(Math.random() * 360);
+    this.text = [];
     
     this.setRadius = function (x) {
         // using f(x) = |3sin(5x) + this.radius|  //stretch in y-axis SF 3// //shift in y-axis + this.radius// //stretch in x-axis SF 1/5//
@@ -25,5 +26,9 @@ function GravityPoint (x, y, radius, mass) {
         if (this.time % 360 == 0) this.time = 0;
         
         this.draw(context, camera);
+        for (let t of this.text) {
+            t.y = this.y - this.radius - 50;
+            t.update(context, camera);
+        }
     }
 }

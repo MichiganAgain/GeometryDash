@@ -3,7 +3,7 @@ function Sprite (x, y) {
     this.y = y;
     this.xVelocity = 0;
     this.yVelocity = 0;
-    this.movingVelocity = 5;
+    this.movingVelocity = 7;
     this.mass = 10;
     this.jumpForce = 15;
     this.SIZE = 39;
@@ -27,11 +27,11 @@ function Sprite (x, y) {
             this.canJumpDown = false;
         }
         if (this.canJumpLeft) {
-                this.xVelocity = -this.jumpForce;
+                //this.xVelocity = -this.jumpForce / 2;
                 this.canJumpLeft = false;
         }
         if (this.canJumpRight) {
-                this.xVelocity = this.jumpForce;
+                //this.xVelocity = this.jumpForce / 2;
                 this.canJumpRight = false;
         }
     }
@@ -84,10 +84,12 @@ function Sprite (x, y) {
             let yDiff = point.y - (this.y + (this.SIZE / 2));
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
 
-            let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
-            let theta = Math.atan2(yDiff, xDiff);
-            this.xVelocity += force * Math.cos(theta);
-            this.yVelocity += force * Math.sin(theta);
+            if (distanceFromPoint <= 3000) {
+                let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
+                let theta = Math.atan2(yDiff, xDiff);
+                this.xVelocity += force * Math.cos(theta);
+                this.yVelocity += force * Math.sin(theta);
+            }
 
             if (distanceFromPoint < point.radius) this.dead = true;
         }
@@ -112,8 +114,8 @@ function Sprite (x, y) {
         if (this.jumping) this.jump();
         this.feelGravityEffects(physics, gravityPoints);
         this.adjustToMaximumVelocity(physics);
-        if (this.movingLeft) this.xVelocity = -10;
-        if (this.movingRight) this.xVelocity = 10;
+        if (this.movingLeft) this.xVelocity = -this.movingVelocity;
+        if (this.movingRight) this.xVelocity = this.movingVelocity;
         
         this.checkBlockCollisions(blocks);
         

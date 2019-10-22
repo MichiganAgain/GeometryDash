@@ -20,6 +20,7 @@ var text;
 var camera;
 var animationID;
 var gameRunning = false;
+var startPressed = false;
 
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("click", function shoot (event) {
@@ -30,7 +31,7 @@ window.addEventListener("click", function shoot (event) {
     //let power = Math.sqrt(xDiff**2 + yDiff**2);
     let power = 20;
     let theta = Math.atan2(yDiff, xDiff);
-    particles.push(new Particle(sprite.x + sprite.SIZE / 2 - sprite.xVelocity, sprite.y + sprite.SIZE / 2 - sprite.yVelocity, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 15, true, "#FF0000"));
+    particles.push(new Particle(sprite.x + sprite.SIZE / 2 - sprite.xVelocity, sprite.y + sprite.SIZE / 2 - sprite.yVelocity, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FF0000"));
 });
 window.addEventListener("keydown", (event) => {
     if (gameRunning && (event.key === " " || event.key === "w" || event.key === "ArrowUp")) sprite.jumping = true;
@@ -43,6 +44,36 @@ window.addEventListener("keyup", (event) => {
     if (gameRunning && (event.key === "d" || event.key === "ArrowRight")) sprite.movingRight = false;
 });
 
+function particleBlockCollision (particle, x, y, negate) {
+    for (let block of blocks) {
+        if (particle.x + particle.radius >= block.x && particle.x - particle.radius <= block.x + block.SIZE) {
+                if (particle.y + particle.radius <= block.y && particle.y + particle.radius + ((negate == false) ? y: -y) >= block.y) {  // top collision
+                    particle.yVelocity *= -0.5;
+                    particle.y = block.y - particle.radius - particle.GUARD;
+                    return true;
+                }
+                if (particle.y - particle.radius >= block.y + block.SIZE && particle.y - particle.radius + ((negate == false) ? y: -y) <= block.y + block.SIZE) {    // bottom collision
+                    particle.yVelocity *= -0.5;
+                    particle.y = block.y + block.SIZE + particle.radius + particle.GUARD;
+                    return true;
+                }
+            }
+            if (particle.y + particle.radius >= block.y && particle.y - particle.radius <= block.y + block.SIZE) {
+                if (particle.x + particle.radius <= block.x && particle.x + particle.radius + ((negate == false) ? x: -x) >= block.x) {   // left collision
+                    particle.xVelocity *= -0.5;
+                    particle.x = block.x - particle.radius - particle.GUARD;
+                    return true;
+                }
+                if (particle.x - particle.radius >= block.x + block.SIZE && particle.x - particle.radius + ((negate == false) ? x: -x) <= block.x + block.SIZE) {   // right collision
+                    particle.xVelocity *= -0.5;
+                    particle.x = block.x + block.SIZE + particle.radius + particle.GUARD;
+                    return true;
+                }
+            }
+    }
+    return false;
+}
+
 function particleCollisions (particles) {
     for (let i = 0; i < particles.length; i++) {
         for (let x = i + 1; x < particles.length; x++) {
@@ -51,10 +82,19 @@ function particleCollisions (particles) {
                 const unitX = (particles[i].x - particles[x].x) / distance;
                 const unitY = (particles[i].y - particles[x].y) / distance;
                 
-                particles[i].x += unitX * distance / 2;
-                particles[i].y += unitY * distance / 2;
-                particles[x].x -= unitX * distance / 2;
-                particles[x].y -= unitY * distance / 2;
+                const b1XDistance = unitX * distance / 2;
+                const b1YDistance = unitX * distance / 2;
+                const b2XDistance = unitX * distance / 2;
+                const b2YDistance = unitX * distance / 2;
+                
+                if (!particleBlockCollision(particles[i], b1XDistance, b1YDistance, false)) {
+                    particles[i].x += b1XDistance;
+                    particles[i].y += b1YDistance;
+                }
+                if (!particleBlockCollision(particles[x], b2XDistance, b2YDistance, true)) {
+                    particles[x].x -= b2XDistance;
+                    particles[x].y -= b2YDistance;
+                }
                 
                 const dp1 = (particles[i].xVelocity) * unitX + (particles[i].yVelocity * unitY);
                 const dp2 = (particles[x].xVelocity) * unitX + (particles[x].yVelocity * unitY);
@@ -69,7 +109,7 @@ function particleCollisions (particles) {
 }
 
 function initializeWorld () {
-    sprite = new Sprite(-19.5, 140);
+    sprite = new Sprite(-1000, 140);
     particles = [];
     blocks = [];
     gravityPoints = [];
@@ -80,17 +120,23 @@ function initializeWorld () {
 			//particles.push(new Particle(i, y, 0, 0, 10, false, "#00FFFF"));
 		}
 	}
-    particles.push(new Particle(0, -50, 5, 0, 10, false, "#00FFFF"));
-    for (let i = -100; i < 100; i++) {
+    for (let i = 0; i < 5; i++) particles.push(new Particle(0, i * 50 - 100, 0, 0, 10, false, "#00FFFF"));
+    for (let i = -100; i < 500; i++) {
         blocks.push(new Block(i * 40, 220));
-        if (i % 5 == 0) blocks.push(new Block(i * 40, 180));
+        if (i % 20 == 0) blocks.push(new Block(i * 40, 180));
     }
-    gravityPoints.push(new GravityPoint(0, -300, 50, 50000000000));
+    gravityPoints.push(new GravityPoint(2000, -300, 70, 100000000000));
+    gravityPoints[0].text.push(new Text("Shoot black holes for BIG", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 50, null, null, (t) => {
+        t = (t / 180) * Math.PI;
+        return 10 * Math.sin(t * 3);
+    }, {x: false, y: true}));
 
-    text.push(new Text("GO THIS WAY :D ->", -300, 100, 50, null, (t) => {
+    text.push(new Text("GO THIS WAY :D ->", -300, -100, "Bungee Shade", 50, null, (t) => {
+        return Math.sin(t / 10) * Math.random() * 1000;
+    }, (t) => {
         t = (t / 180) * Math.PI;
         return 50 * Math.sin(t * 5);
-    }));
+    }, {x: true, y: false}));
     
     camera = new Camera(canvas, sprite);
     animate();
@@ -101,7 +147,6 @@ function animate () {
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
-    for (let t of text) t.update(context, camera);
     particleCollisions(particles);
     for (let i = 0; i < particles.length; i++) {
         particles[i].update(context, physics, camera);
@@ -117,5 +162,6 @@ function animate () {
         gameRunning = false;
         initializeWorld();
     }
+    for (let t of text) t.update(context, camera);
 }
 initializeWorld();

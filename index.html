@@ -3,6 +3,7 @@
     <head>
         
         <link href="https://fonts.googleapis.com/css?family=Faster+One|Press+Start+2P&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Bungee+Shade&display=swap" rel="stylesheet">
     
         <style>
         
@@ -22,6 +23,7 @@
             }
             
             canvas {
+                z-index: 0;
                 background-color: #333333;
                 width: 100%;
                 height: 100%;
@@ -30,14 +32,23 @@
                 left: 50%; top: 50%;
                 transform: translate(-50%, -50%);
             }
+            
+            .text {
+                font-size: 300%;
+                position: absolute;
+                color: pink;
+                z-index: 1;
+                font-family: 'Bungee Shade', cursive;
+            }
+            
+            @import url(https://fonts.googleapis.com/css?family=Bungee+Shade&display=swap);
+            /*  font-family: 'Bungee Shade', cursive;  */
         
         </style>
     
     </head>
     
     <body onload="pageLoad()">
-    
-        <div id="header">I <3 OXYGEN</div>
         <canvas id="mainCanvas"></canvas>
         
         <script src="js/sprite.js"></script>

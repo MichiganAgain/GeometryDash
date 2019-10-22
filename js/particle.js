@@ -17,20 +17,24 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
             if (this.x + this.radius >= block.x && this.x - this.radius <= block.x + block.SIZE) {
                 if (this.y + this.radius <= block.y && this.y + this.radius + this.yVelocity >= block.y) {  // top collision
                     this.yVelocity *= -0.5;
+                    this.xVelocity /= block.friction;
                     this.y = block.y - this.radius - this.GUARD;
                 }
                 if (this.y - this.radius >= block.y + block.SIZE && this.y - this.radius + this.yVelocity <= block.y + block.SIZE) {    // bottom collision
                     this.yVelocity *= -0.5;
+                    this.xVelocity /= block.friction;
                     this.y = block.y + block.SIZE + this.radius + this.GUARD;
                 }
             }
             if (this.y + this.radius >= block.y && this.y - this.radius <= block.y + block.SIZE) {
                 if (this.x + this.radius <= block.x && this.x + this.radius + this.xVelocity >= block.x) {   // left collision
                     this.xVelocity *= -0.5;
+                    this.yVelocity /= block.friction;
                     this.x = block.x - this.radius - this.GUARD;
                 }
                 if (this.x - this.radius >= block.x + block.SIZE && this.x - this.radius + this.xVelocity <= block.x + block.SIZE) {   // right collision
                     this.xVelocity *= -0.5;
+                    this.yVelocity /= block.friction;
                     this.x = block.x + block.SIZE + this.radius + this.GUARD;
                 }
             }
@@ -46,8 +50,8 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
             if (distanceFromPoint <= point.radius - this.radius) {
                 this.dead = true
-                point.radius += this.radius / 15;
-                point.mass += 2000000000;
+                point.radius += this.radius / 5;
+                point.mass += 5000000000;
             }
 
             let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
