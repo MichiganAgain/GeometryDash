@@ -115,28 +115,38 @@ function initializeWorld () {
     gravityPoints = [];
     text = [];
 
-	for (let i = 0; i <= 0; i += 200) {
-		for (let y = 120; y > -270; y -= 30) {
-			//particles.push(new Particle(i, y, 0, 0, 10, false, "#00FFFF"));
-		}
-	}
-    for (let i = 0; i < 5; i++) particles.push(new Particle(0, i * 50 - 100, 0, 0, 10, false, "#00FFFF"));
+    for (let x = 0; x < 5; x++) {
+        for (let y = 0; y < 5; y++) {
+            //particles.push(new Particle(x * 100 + 50, y * 100 - 250, 0, 0, 10, false, "#00FFFF"));
+        }
+    }
     for (let i = -100; i < 500; i++) {
         blocks.push(new Block(i * 40, 220));
         if (i % 20 == 0) blocks.push(new Block(i * 40, 180));
     }
     gravityPoints.push(new GravityPoint(2000, -300, 70, 100000000000));
-    gravityPoints[0].text.push(new Text("Shoot black holes for BIG", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 50, null, null, (t) => {
+    gravityPoints.push(new GravityPoint(-350, -600, 70, 100000000000));
+    particles.push(new Particle(-350, -490, 7.25, 0, 10, false, "#00FFFF"));
+    gravityPoints[0].text.push(new Text("Shoot black holes for fun :P", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 50, null, null, (t) => {
         t = (t / 180) * Math.PI;
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
-
-    text.push(new Text("GO THIS WAY :D ->", -300, -100, "Bungee Shade", 50, null, (t) => {
+    text.push(new Text("GO THIS WAY :D ->", -350, -400, "Bungee Shade", 50, null, (t) => {
         return Math.sin(t / 10) * Math.random() * 1000;
     }, (t) => {
         t = (t / 180) * Math.PI;
         return 50 * Math.sin(t * 5);
     }, {x: true, y: false}));
+    
+    blocks.push(new Block(0, 140));
+    for (let i = 0; i < 10; i++) {
+        //blocks.push(new Block(i * 40, -300));
+        blocks.push(new Block(i * 40, 100));
+    }
+    for (let i = 0; i <= 10; i++) {
+        blocks.push(new Block(0, i * 40 - 300));
+        //blocks.push(new Block(400, i * 40 - 300));
+    }
     
     camera = new Camera(canvas, sprite);
     animate();

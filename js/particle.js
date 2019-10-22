@@ -3,6 +3,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.y = y;
     this.xVelocity = xVelocity;
     this.yVelocity = yVelocity;
+    this.trail = [];
     this.radius = radius;
     this.color = color;
     this.SIZE = 0;  // so it can be tracked by the camera  should really replace this with parent class / interface tbh
@@ -10,7 +11,10 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.mass = this.radius;
     this.dead = false;
     this.lethal = lethal;
-    this.ttl = 300;
+    this.ttl = 200;
+    this.ttd = 1;
+    this.maxTrailLength = 20;
+    this.t = 0;
     
     this.checkBlockCollisions = function (blocks) {
         for (let block of blocks) {
@@ -70,6 +74,12 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     }
     
     this.draw = function (context, camera) {
+        for (let dot of this.trail) {
+            context.beginPath();
+            context.arc(dot.x + camera.xOffset, dot.y + camera.yOffset, 3, 0, Math.PI * 2, false);
+            context.stroke();
+        }
+        
         context.fillStyle = this.color;
         context.lineWidth = 1;
         context.beginPath();
@@ -83,13 +93,20 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         this.adjustToMaximumVelocity(physics);
         
         this.checkBlockCollisions(blocks);
-        
+
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         
         if (this.lethal) {
             this.ttl--;
             if (this.ttl <= 0) this.dead = true;
+        }
+        
+        this.t++;
+        if (this.t % this.ttd == 0) {
+            if (this.trail.length > this.maxTrailLength) this.trail.splice(0, 1);
+            this.trail.push({x: this.x, y: this.y});
+            this.t = 0;
         }
         
         this.draw(context, camera);

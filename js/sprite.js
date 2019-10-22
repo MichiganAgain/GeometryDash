@@ -27,12 +27,14 @@ function Sprite (x, y) {
             this.canJumpDown = false;
         }
         if (this.canJumpLeft) {
-                //this.xVelocity = -this.jumpForce / 2;
-                this.canJumpLeft = false;
+            //this.xVelocity = -this.jumpForce / 2;
+            this.yVelocity -= this.jumpForce / 17;
+            this.canJumpLeft = false;
         }
         if (this.canJumpRight) {
-                //this.xVelocity = this.jumpForce / 2;
-                this.canJumpRight = false;
+            //this.xVelocity = this.jumpForce / 2;
+            this.yVelocity -= this.jumpForce / 17;
+            this.canJumpRight = false;
         }
     }
     
