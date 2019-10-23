@@ -22,6 +22,8 @@ var camera;
 var animationID;
 var gameRunning = false;
 var startPressed = false;
+var inputTimeStamp = Date.now();
+var timeTorRestart = 20000;
 
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("click", function shoot (event) {
@@ -35,11 +37,14 @@ window.addEventListener("click", function shoot (event) {
     particles.push(new Particle(sprite.x + sprite.SIZE / 2 - sprite.xVelocity, sprite.y + sprite.SIZE / 2 - sprite.yVelocity, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FF0000"));
 });
 window.addEventListener("keydown", (event) => {
+    startPressed = true;
+    inputTimeStamp = Date.now();
     if (gameRunning && (event.key === " " || event.key === "w" || event.key === "ArrowUp")) sprite.jumping = true;
     if (gameRunning && (event.key === "a" || event.key === "ArrowLeft")) sprite.movingLeft = true;
     if (gameRunning && (event.key === "d" || event.key === "ArrowRight")) sprite.movingRight = true;
 });
 window.addEventListener("keyup", (event) => {
+    inputTimeStamp = Date.now();
     if (gameRunning && (event.key === " " || event.key === "w" || event.key === "ArrowUp")) sprite.jumping = false;
     if (gameRunning && (event.key === "a" || event.key === "ArrowLeft")) sprite.movingLeft = false;
     if (gameRunning && (event.key === "d" || event.key === "ArrowRight")) sprite.movingRight = false;
@@ -110,46 +115,50 @@ function particleCollisions (particles) {
 }
 
 function initializeWorld () {
-    sprite = new Sprite(-1000, 140);
+    sprite = new Sprite(-1500, -140);
     particles = [];
     blocks = [];
     gravityPoints = [];
     text = [];
-
-    for (let x = 0; x < 5; x++) {
-        for (let y = 0; y < 5; y++) {
-            //particles.push(new Particle(x * 100 + 50, y * 100 - 250, 0, 0, 10, false, "#00FFFF"));
-        }
-    }
-    for (let i = -100; i < 500; i++) {
-        blocks.push(new Block(i * 40, 220));
-        if (i % 20 == 0) blocks.push(new Block(i * 40, 180));
-    }
-    gravityPoints.push(new GravityPoint(2000, -300, 70, 100000000000));
-    gravityPoints.push(new GravityPoint(-350, -600, 70, 100000000000));
-    particles.push(new Particle(-350, -490, 7.25, 0, 10, false, "#00FFFF"));
-    gravityPoints[0].text.push(new Text("Shoot black holes for fun :P", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 50, null, null, (t) => {
+    
+    gravityPoints.push(new GravityPoint(-1000, -600, 70, 500000000000));
+    gravityPoints.push(new GravityPoint(500, -300, 70, 100000000000));
+    gravityPoints[0].teleportTo = gravityPoints[1];
+    particles.push(new Particle(-1000, -490, 17, 0, 10, false, "#00FFFF"));
+    
+    gravityPoints[0].text.push(new Text("V Jump in to ESCAPE V", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 50, null, null, (t) => {
         t = (t / 180) * Math.PI;
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
-    text.push(new Text("GO THIS WAY :D ->", -350, -400, "Bungee Shade", 50, null, (t) => {
+    gravityPoints[1].text.push(new Text("Shoot black holes for fun :P", gravityPoints[1].x, gravityPoints[1].y - gravityPoints[1].radius, "Bungee Shade", 50, null, null, (t) => {
+        t = (t / 180) * Math.PI;
+        return 10 * Math.sin(t * 3);
+    }, {x: false, y: true}));
+    
+    /*text.push(new Text("GO THIS WAY :D ->", -350, -400, "Bungee Shade", 50, null, (t) => {
         return Math.sin(t / 10) * Math.random() * 1000;
     }, (t) => {
         t = (t / 180) * Math.PI;
         return 50 * Math.sin(t * 5);
-    }, {x: true, y: false}));
+    }, {x: true, y: false}));*/
     
-    blocks.push(new Block(0, 140));
-    for (let i = 0; i < 10; i++) {
-        //blocks.push(new Block(i * 40, -300));
-        blocks.push(new Block(i * 40, 100));
+
+    for (let i = -100; i < 500; i++) {
+        blocks.push(new Block(i * 40, 220, "#111111"));
+        if (i % 20 == 0) blocks.push(new Block(i * 40, 180, "#111111"));
     }
-    for (let i = 0; i <= 10; i++) {
-        blocks.push(new Block(0, i * 40 - 300));
-        //blocks.push(new Block(400, i * 40 - 300));
+    for (let i = 0; i < 40; i++) {
+        blocks.push(new Block(i * 40 - 2000, 0, "#111111"));
+        blocks.push(new Block(i * 40 - 2000, -1000, "#111111"));
     }
-    
+    for (let i = 0; i < 26; i++) {
+        blocks.push(new Block(-2000, i * 40 - 1000, "#111111"));
+        blocks.push(new Block(-400, i * 40 - 1000, "#111111"));
+    }
+
     camera = new Camera(canvas, sprite);
+    inputTimeStamp = Date.now();
+    startPressed = false;
     animate();
 }
 
@@ -175,5 +184,11 @@ function animate () {
         initializeWorld();
     }
     for (let t of text) t.update(context, camera);
+    
+    if (Date.now() - inputTimeStamp > timeTorRestart && startPressed) {
+        cancelAnimationFrame(animationID);
+        gameRunning = false;
+        initializeWorld();
+    }
 }
 initializeWorld();

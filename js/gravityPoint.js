@@ -4,6 +4,7 @@ function GravityPoint (x, y, radius, mass) {
     this.radius = radius;
     this.SIZE = 0;  // so it can be tracked by the camera  should really replace this with parent class / interface tbh
     this.mass = mass;
+    this.teleportTo = null;
     this.time = Math.floor(Math.random() * 360);
     this.text = [];
     

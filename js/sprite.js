@@ -93,7 +93,14 @@ function Sprite (x, y) {
                 this.yVelocity += force * Math.sin(theta);
             }
 
-            if (distanceFromPoint < point.radius) this.dead = true;
+            if (distanceFromPoint < point.radius) {
+                if (point.teleportTo == null) this.dead = true;
+                else {
+                    this.x = point.teleportTo.x;
+                    this.y = point.teleportTo.y + point.teleportTo.radius + this.SIZE * 1;
+                    this.yVelocity = 1;
+                }
+            }
         }
     }
     
