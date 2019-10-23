@@ -28,12 +28,12 @@ function Sprite (x, y) {
         }
         if (this.canJumpLeft) {
             //this.xVelocity = -this.jumpForce / 2;
-            this.yVelocity -= this.jumpForce / 17;
+            this.yVelocity -= this.jumpForce / 20;
             this.canJumpLeft = false;
         }
         if (this.canJumpRight) {
             //this.xVelocity = this.jumpForce / 2;
-            this.yVelocity -= this.jumpForce / 17;
+            this.yVelocity -= this.jumpForce / 20;
             this.canJumpRight = false;
         }
     }

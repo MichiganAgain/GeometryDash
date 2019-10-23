@@ -12,6 +12,7 @@ function resizeCanvas () {
 
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
+const maxParticles = 50;
 var sprite;
 var particles;
 var blocks;
@@ -162,6 +163,7 @@ function animate () {
         particles[i].update(context, physics, camera);
         if (particles[i].dead) particles.splice(i, 1);
     }
+    if (particles.length > maxParticles) particles.splice(0, particles.length - maxParticles);
     sprite.update(context, physics, camera, blocks, gravityPoints);
     for (let block of blocks) block.update(context, physics, camera);
     for (let point of gravityPoints) point.update(context, camera);
