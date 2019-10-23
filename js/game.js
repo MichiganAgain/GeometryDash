@@ -122,7 +122,8 @@ function initializeWorld () {
     text = [];
     
     gravityPoints.push(new GravityPoint(-1000, -600, 70, 500000000000));
-    gravityPoints.push(new GravityPoint(500, -300, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(700, -400, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(1575, -420, 70, 100000000000));
     gravityPoints[0].teleportTo = gravityPoints[1];
     particles.push(new Particle(-1000, -490, 17, 0, 10, false, "#00FFFF"));
     
@@ -135,13 +136,33 @@ function initializeWorld () {
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
     
-    /*text.push(new Text("GO THIS WAY :D ->", -350, -400, "Bungee Shade", 50, null, (t) => {
+    text.push(new Text("GO THIS WAY :D ->", 2500, -400, "Bungee Shade", 50, null, (t) => {
         return Math.sin(t / 10) * Math.random() * 1000;
     }, (t) => {
         t = (t / 180) * Math.PI;
         return 50 * Math.sin(t * 5);
-    }, {x: true, y: false}));*/
+    }, {x: true, y: false}));
+    text.push(new Text("Vote for me hehe :P <3", 4000, -400, "Bungee Shade", 50, null, (t) => {
+        return Math.sin(t / 10) * Math.random() * 1000;
+    }, (t) => {
+        t = (t / 180) * Math.PI;
+        return 50 * Math.sin(t * 5);
+    }, {x: true, y: true}));
     
+    for (let x = 0; x < 10; x++) {
+        for (let y = 0; y < 10; y++) {
+            blocks.push(new Block(x * 40 + 1000, y * 40 - 300, "#111111"));
+            blocks.push(new Block(x * 40 + 1750, y * 40 - 300, "#111111"));
+            blocks.push(new Block(x * 40 + 1000, y * 40 - 1000, "#111111"));
+            blocks.push(new Block(x * 40 + 1750, y * 40 - 1000, "#111111"));
+        }
+    }
+    
+    for (let i = 0; i < 100; i++) {
+        blocks.push(new Block(i * 40 + 4000, -300, "#111111"));
+    }
+    
+    for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 + 1360, 20, "#111111"));
 
     for (let i = -100; i < 500; i++) {
         blocks.push(new Block(i * 40, 220, "#111111"));

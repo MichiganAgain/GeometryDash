@@ -17,6 +17,13 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.t = 0;
     this.particleGenerationTime = 75;
     
+    this.colorGen = function () {
+        let r = Math.floor(Math.random() * 256).toString(16);
+        let g = Math.floor(Math.random() * 256).toString(16);
+        let b = Math.floor(Math.random() * 256).toString(16);
+        return "#" + r + g + b;
+    }
+    
     this.checkBlockCollisions = function (blocks) {
         for (let block of blocks) {
             if (this.x + this.radius >= block.x && this.x - this.radius <= block.x + block.SIZE) {
@@ -114,5 +121,6 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         }
         
         this.draw(context, camera);
+        this.color = this.colorGen();
     }
 }
