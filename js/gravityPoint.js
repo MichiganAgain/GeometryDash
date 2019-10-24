@@ -26,9 +26,11 @@ function GravityPoint (x, y, radius, mass) {
         this.time++;
         if (this.time % 360 == 0) this.time = 0;
         
+        this.x++;
         this.draw(context, camera);
         for (let t of this.text) {
             t.y = this.y - this.radius - 50;
+            t.x = this.x;
             t.update(context, camera);
         }
     }

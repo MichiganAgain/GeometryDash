@@ -11,9 +11,9 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.mass = this.radius;
     this.dead = false;
     this.lethal = lethal;
-    this.ttl = 200;
+    this.ttl = 300;
     this.ttd = 1;
-    this.maxTrailLength = 20;
+    this.maxTrailLength = 50;
     this.t = 0;
     this.particleGenerationTime = 75;
     
@@ -113,7 +113,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         this.t++;
         if (this.t % this.ttd == 0) {
             if (this.trail.length > this.maxTrailLength) {
-                //if (this.t % this.particleGenerationTime == 0) particles.push(new Particle(this.trail[0].x, this.trail[0].y, Math.random() * 5, Math.random() * 5, 10, false, "#00FFFF"));
+                if (this.t % this.particleGenerationTime == 0) particles.push(new Particle(this.trail[0].x, this.trail[0].y, Math.random() * 5, Math.random() * 5, 10, false, "#00FFFF"));
                 this.trail.splice(0, 1);
             }
             this.trail.push({x: this.x, y: this.y});

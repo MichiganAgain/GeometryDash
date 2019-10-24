@@ -4,6 +4,18 @@ function Block (x, y, color) {
     this.color = color;
     this.SIZE = 40;
     this.friction = 1.3;
+    this.dead = false;
+    
+    this.checkConsumed = function (gravityPoints) {
+        for (let point of gravityPoints) {
+            let distance = Math.sqrt((point.x - (this.x + this.SIZE / 2))**2 + (point.y - (this.y + this.SIZE / 2))**2);
+            if (distance <= point.radius + point.radius / 5) {
+                point.radius += this.SIZE / 40;
+                point.mass += 5000000000;
+                this.dead = true;
+            }
+        }
+    }
     
     this.draw = function (context, camera) {
         context.fillStyle = this.color;
@@ -14,7 +26,8 @@ function Block (x, y, color) {
         context.stroke();
     }
     
-    this.update = function (context, physics, camera) {        
+    this.update = function (context, gravityPoints, physics, camera) {
+        this.checkConsumed(gravityPoints);
         this.draw(context, camera);
     }
 }
