@@ -16,14 +16,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.maxTrailLength = 50;
     this.t = 0;
     this.particleGenerationTime = 75;
-    
-    this.colorGen = function () {
-        let r = Math.floor(Math.random() * 256).toString(16);
-        let g = Math.floor(Math.random() * 256).toString(16);
-        let b = Math.floor(Math.random() * 256).toString(16);
-        return "#" + r + g + b;
-    }
-    
+
     this.checkBlockCollisions = function (blocks) {
         for (let block of blocks) {
             if (this.x + this.radius >= block.x && this.x - this.radius <= block.x + block.SIZE) {
@@ -84,7 +77,10 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.draw = function (context, camera) {
         for (let i = 0; i < this.trail.length; i++) {
             context.beginPath();
+            let contrast = (i / this.maxTrailLength) * 255;
+            context.fillStyle = "#" + contrast.toString(16) + contrast.toString(16) + contrast.toString(16);
             context.arc(this.trail[i].x + camera.xOffset, this.trail[i].y + camera.yOffset, 3 + (i/this.maxTrailLength) * 6, 0, Math.PI * 2, false);
+            context.fill();
             context.stroke();
         }
         
@@ -113,7 +109,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         this.t++;
         if (this.t % this.ttd == 0) {
             if (this.trail.length > this.maxTrailLength) {
-                if (this.t % this.particleGenerationTime == 0) particles.push(new Particle(this.trail[0].x, this.trail[0].y, Math.random() * 5, Math.random() * 5, 10, false, "#00FFFF"));
+                //if (this.t % this.particleGenerationTime == 0) particles.push(new Particle(this.trail[0].x, this.trail[0].y, Math.random() * 5, Math.random() * 5, 10, false, "#00FFFF"));
                 this.trail.splice(0, 1);
             }
             this.trail.push({x: this.x, y: this.y});
@@ -121,6 +117,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         }
         
         this.draw(context, camera);
-        this.color = this.colorGen();
+        //this.color = this.colorGen();
+        this.color = "#FFFFFF";
     }
 }

@@ -15,3 +15,7 @@ function Camera (canvas, trackedObject) {
         return 20 * Math.sin(x / 100);
     }
 }
+
+function FocusPoint () {
+    
+}

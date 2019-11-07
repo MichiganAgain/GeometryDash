@@ -86,7 +86,7 @@ function Sprite (x, y) {
             let yDiff = point.y - (this.y + (this.SIZE / 2));
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
 
-            if (distanceFromPoint <= 3000) {
+            if (distanceFromPoint >= 0) {
                 let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
                 let theta = Math.atan2(yDiff, xDiff);
                 this.xVelocity += force * Math.cos(theta);
@@ -130,7 +130,7 @@ function Sprite (x, y) {
         
         this.x += this.xVelocity;
         this.y += this.yVelocity;
-        camera.update(canvas);
+        //camera.update(canvas);
         //this.x = -19.5;
         //this.y = -19.5 + 200;
         this.draw(context, camera);

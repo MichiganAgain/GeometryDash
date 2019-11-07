@@ -9,7 +9,7 @@ function Block (x, y, color) {
     this.checkConsumed = function (gravityPoints) {
         for (let point of gravityPoints) {
             let distance = Math.sqrt((point.x - (this.x + this.SIZE / 2))**2 + (point.y - (this.y + this.SIZE / 2))**2);
-            if (distance <= point.radius + point.radius / 5) {
+            if (distance <= point.radius) {
                 point.radius += this.SIZE / 40;
                 point.mass += 5000000000;
                 this.dead = true;

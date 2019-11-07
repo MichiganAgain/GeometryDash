@@ -24,22 +24,33 @@ var gameRunning = false;
 var startPressed = false;
 var inputTimeStamp = Date.now();
 var timeTorRestart = 1000000;
+var mouseX = 0;
+var mouseY = 0;
 
-window.addEventListener("resize", resizeCanvas);
-window.addEventListener("click", function shoot (event) {
-    let mouseX = event.clientX - camera.xOffset;
-    let mouseY = event.clientY - camera.yOffset;
+function shoot () {
     let xDiff = mouseX - sprite.x;
     let yDiff = mouseY - sprite.y;
     //let power = Math.sqrt(xDiff**2 + yDiff**2);
-    let power = 20;
+    let power = 30;
     let theta = Math.atan2(yDiff, xDiff);
-    particles.push(new Particle(sprite.x + sprite.SIZE / 2 - sprite.xVelocity, sprite.y + sprite.SIZE / 2 - sprite.yVelocity, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FF0000"));
+    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 5, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FFFFFF"));
+}
+
+window.addEventListener("resize", resizeCanvas);
+window.addEventListener("click", (event) => {
+    mouseX = event.clientX - camera.xOffset;
+    mouseY = event.clientY - camera.yOffset; 
+    shoot();
+});
+window.addEventListener("mousemove", (event) => {
+    mouseX = event.clientX - camera.xOffset;
+    mouseY = event.clientY - camera.yOffset;
 });
 window.addEventListener("keydown", (event) => {
     startPressed = true;
     inputTimeStamp = Date.now();
     if (gameRunning && (event.key === " " || event.key === "w" || event.key === "ArrowUp")) sprite.jumping = true;
+    if (gameRunning && (event.key === "s" || event.key === "ArrowDown")) shoot();
     if (gameRunning && (event.key === "a" || event.key === "ArrowLeft")) sprite.movingLeft = true;
     if (gameRunning && (event.key === "d" || event.key === "ArrowRight")) sprite.movingRight = true;
 });
@@ -121,7 +132,7 @@ function initializeWorld () {
     gravityPoints = [];
     text = [];
     
-    gravityPoints.push(new GravityPoint(-1000, -600, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(-1000, -300, 70, 100000000000));
     gravityPoints.push(new GravityPoint(700, -400, 70, 100000000000));
     gravityPoints.push(new GravityPoint(1575, -420, 70, 100000000000));
     gravityPoints[0].teleportTo = gravityPoints[1];
@@ -192,6 +203,7 @@ function animate () {
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
+    camera.update(canvas);
     particleCollisions(particles);
     for (let i = 0; i < particles.length; i++) {
         particles[i].update(context, physics, camera);
@@ -205,8 +217,6 @@ function animate () {
         blocks[i].update(context, gravityPoints, physics, camera);
         if (blocks[i].dead) blocks.splice(i, 1);
     }
-    
-    camera.update(canvas);
     
     if (sprite.dead) {
         cancelAnimationFrame(animationID);

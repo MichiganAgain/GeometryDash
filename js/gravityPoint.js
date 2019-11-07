@@ -9,7 +9,7 @@ function GravityPoint (x, y, radius, mass) {
     this.text = [];
     
     this.setRadius = function (x) {
-        // using f(x) = |3sin(5x) + this.radius|  //stretch in y-axis SF 3// //shift in y-axis + this.radius// //stretch in x-axis SF 1/5//
+        // using f(x) = |7sin(5x) + this.radius|  //stretch in y-axis SF 7// //shift in y-axis + this.radius// //stretch in x-axis SF 1/5//
         x = (x / 180) * Math.PI;
         return Math.abs(7 * Math.sin(x * 5) + this.radius);
     }
@@ -25,8 +25,7 @@ function GravityPoint (x, y, radius, mass) {
     this.update = function (context, camera) {
         this.time++;
         if (this.time % 360 == 0) this.time = 0;
-        
-        this.x++;
+
         this.draw(context, camera);
         for (let t of this.text) {
             t.y = this.y - this.radius - 50;
