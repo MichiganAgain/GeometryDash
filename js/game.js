@@ -3,6 +3,7 @@ var context = canvas.getContext("2d");
 
 function pageLoad () {
     resizeCanvas();
+    loadImages();
 }
 
 function resizeCanvas () {
@@ -13,6 +14,9 @@ function resizeCanvas () {
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
 const maxParticles = 50;
+let images = {spriteImage: new Image(), planetImage: new Image()};
+const imageCount = 2;
+let imagesLoadedCount = 0;
 var sprite;
 var particles;
 var blocks;
@@ -126,15 +130,15 @@ function particleCollisions (particles) {
 }
 
 function initializeWorld () {
-    sprite = new Sprite(-1500, -140);
+    sprite = new Sprite(-1500, -140, images.spriteImage);
     particles = [];
     blocks = [];
     gravityPoints = [];
     text = [];
     
-    gravityPoints.push(new GravityPoint(-1000, -300, 70, 100000000000));
-    gravityPoints.push(new GravityPoint(700, -400, 70, 100000000000));
-    gravityPoints.push(new GravityPoint(1575, -420, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(-1000, -300, images.planetImage, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(700, -400, images.planetImage, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(1575, -420, images.planetImage, 70, 100000000000));
     gravityPoints[0].teleportTo = gravityPoints[1];
     particles.push(new Particle(-1000, -490, 17, 0, 10, false, "#00FFFF"));
     
@@ -198,6 +202,18 @@ function initializeWorld () {
     animate();
 }
 
+function loadImages () {
+    images.spriteImage.src = "images/superMeatBoy.png";
+    images.spriteImage.onload = () => {imageLoadCheck();}
+    images.planetImage.src = "images/redPlanet.svg";
+    images.planetImage.onload = () => {imageLoadCheck();}
+}
+
+function imageLoadCheck () {
+    imagesLoadedCount++;
+    if (imagesLoadedCount == imageCount) initializeWorld();
+}
+
 function animate () {
     gameRunning = true;
     animationID = requestAnimationFrame(animate);
@@ -230,4 +246,3 @@ function animate () {
         initializeWorld();
     }
 }
-initializeWorld();

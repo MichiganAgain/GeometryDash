@@ -1,6 +1,7 @@
-function Sprite (x, y) {
+function Sprite (x, y, image) {
     this.x = x;
     this.y = y;
+    this.image = image;
     this.xVelocity = 0;
     this.yVelocity = 0;
     this.movingVelocity = 7;
@@ -113,9 +114,10 @@ function Sprite (x, y) {
     }
     
     this.draw = function (context, camera) {
-        context.fillStyle = "#555555";
-        context.fillRect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
-        context.stroke();
+        //context.fillStyle = "#555555";
+        //context.fillRect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
+        //context.stroke();
+        context.drawImage(this.image, 0, 0, this.image.width, this.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
     }
     
     this.update = function (context, physics, camera, blocks, gravityPoints) {

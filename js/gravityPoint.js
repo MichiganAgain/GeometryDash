@@ -1,6 +1,7 @@
-function GravityPoint (x, y, radius, mass) {
+function GravityPoint (x, y, image, radius, mass) {
     this.x = x;
     this.y = y;
+    this.image = image;
     this.radius = radius;
     this.SIZE = 0;  // so it can be tracked by the camera  should really replace this with parent class / interface tbh
     this.mass = mass;
@@ -19,7 +20,8 @@ function GravityPoint (x, y, radius, mass) {
         context.lineWidth = 0;
         context.beginPath();
         context.arc(this.x + camera.xOffset, this.y + camera.yOffset, this.setRadius(this.time), 0, 2 * Math.PI, false);
-        context.fill();
+//        context.fill();
+        context.drawImage(this.image, 0, 0, this.image.width, this.image.height, this.x + camera.xOffset - this.setRadius(this.time), this.y + camera.yOffset - this.setRadius(this.time), this.setRadius(this.time) * 2, this.setRadius(this.time) * 2);
     }
     
     this.update = function (context, camera) {
