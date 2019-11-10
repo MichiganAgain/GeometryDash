@@ -11,7 +11,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
     this.mass = this.radius;
     this.dead = false;
     this.lethal = lethal;
-    this.ttl = 300;
+    this.ttl = 200;
     this.timeToDot = 1;
     this.maxTrailLength = 10;
     this.t = 0;

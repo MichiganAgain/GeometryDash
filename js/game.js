@@ -13,15 +13,16 @@ function resizeCanvas () {
 
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
-const maxParticles = 50;
-let images = {spriteImage: new Image(), planetImage: new Image()};
-const imageCount = 2;
+const maxParticles = 10;
+let externalImages = {spriteImage: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image()};
+const imageCount = 7;
 let imagesLoadedCount = 0;
 var sprite;
 var particles;
 var blocks;
 var gravityPoints;
 var text;
+var images;
 var camera;
 var animationID;
 var gameRunning = false;
@@ -30,15 +31,6 @@ var inputTimeStamp = Date.now();
 var timeTorRestart = 1000000;
 var mouseX = 0;
 var mouseY = 0;
-
-function shoot () {
-    let xDiff = mouseX - sprite.x;
-    let yDiff = mouseY - sprite.y;
-    //let power = Math.sqrt(xDiff**2 + yDiff**2);
-    let power = 30;
-    let theta = Math.atan2(yDiff, xDiff);
-    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 5, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FFFFFF"));
-}
 
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("click", (event) => {
@@ -65,7 +57,39 @@ window.addEventListener("keyup", (event) => {
     if (gameRunning && (event.key === "d" || event.key === "ArrowRight")) sprite.movingRight = false;
 });
 
-function particleBlockCollision (particle, x, y, negate) {
+function loadImages () {
+    externalImages.spriteImage.src = "images/superMeatBoy.png";
+    externalImages.spriteImage.onload = () => {imageLoadCheck();}
+    externalImages.planetImage.src = "images/redPlanet.svg";
+    externalImages.planetImage.onload = () => {imageLoadCheck();}
+    externalImages.blockImageGrass.src = "images/grass.png";
+    externalImages.blockImageGrass.onload = () => {imageLoadCheck();}
+    externalImages.blockImageDirt.src = "images/dirt.png";
+    externalImages.blockImageDirt.onload = () => {imageLoadCheck();}
+    externalImages.blockImageBlueDirt.src = "images/blueDirt.png";
+    externalImages.blockImageBlueDirt.onload = () => {imageLoadCheck();}
+    externalImages.orangeMushroom.src = "images/orangeMushroom.png";
+    externalImages.orangeMushroom.onload = () => {imageLoadCheck();}
+    externalImages.backgroundImage.src = "images/FlatNightBG.png";
+    externalImages.backgroundImage.onload = () => {imageLoadCheck();}
+}
+
+function imageLoadCheck () {
+    imagesLoadedCount++;
+    if (imagesLoadedCount == imageCount) initializeWorld();
+}
+
+function shoot () {
+    let xDiff = mouseX - sprite.x;
+    let yDiff = mouseY - sprite.y;
+    //let power = Math.sqrt(xDiff**2 + yDiff**2);
+    let power = 30;
+    let theta = Math.atan2(yDiff, xDiff);
+    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 5, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FFFFFF"));
+}
+
+// this is a really dumb function that I had to add to fix balls going through blocks  Now it messes everything up but I'm keeping it :D
+function particleBlockCollision (particle, x, y, negate) { // even tho there are now two freaking particle collision functions
     for (let block of blocks) {
         if (particle.x + particle.radius >= block.x && particle.x - particle.radius <= block.x + block.SIZE) {
                 if (particle.y + particle.radius <= block.y && particle.y + particle.radius + ((negate == false) ? y: -y) >= block.y) {  // top collision
@@ -130,19 +154,25 @@ function particleCollisions (particles) {
 }
 
 function initializeWorld () {
-    sprite = new Sprite(-1500, -140, images.spriteImage);
+    sprite = new Sprite(-1500, -140, externalImages.spriteImage);
     particles = [];
     blocks = [];
     gravityPoints = [];
     text = [];
+    images = [];
     
-    gravityPoints.push(new GravityPoint(-1000, -300, images.planetImage, 70, 100000000000));
-    gravityPoints.push(new GravityPoint(700, -400, images.planetImage, 70, 100000000000));
-    gravityPoints.push(new GravityPoint(1575, -420, images.planetImage, 70, 100000000000));
+    images.push(new myImage(-20, 0, canvas.width + 40, canvas.height, "absolute", externalImages.backgroundImage, (t) => {t = (t/180) * Math.PI; return Math.sin(t/1) * 10}));
+    images.push(new myImage(-1500, -100, 100, 100, null, externalImages.spriteImage));
+    images.push(new myImage(-1400, -30, 32, 32, null, externalImages.orangeMushroom));
+    images.push(new myImage(-1532, -30, 32, 32, null, externalImages.orangeMushroom));
+    
+    gravityPoints.push(new GravityPoint(-1000, -300, externalImages.planetImage, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(700, -400, externalImages.planetImage, 70, 100000000000));
+    gravityPoints.push(new GravityPoint(1575, -420, externalImages.planetImage, 70, 100000000000));
     gravityPoints[0].teleportTo = gravityPoints[1];
-    particles.push(new Particle(-1000, -490, 17, 0, 10, false, "#00FFFF"));
+    particles.push(new Particle(-1000, -470, 5.5, 0, 10, false, "#00FFFF"));
     
-    gravityPoints[0].text.push(new Text("V Jump in to ESCAPE V", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 50, null, null, (t) => {
+    gravityPoints[0].text.push(new Text("Jump in to ESCAPE", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 20, null, null, (t) => {
         t = (t / 180) * Math.PI;
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
@@ -166,34 +196,28 @@ function initializeWorld () {
     
     for (let x = 0; x < 10; x++) {
         for (let y = 0; y < 10; y++) {
-            blocks.push(new Block(x * 40 + 1000, y * 40 - 300, "#111111"));
-            blocks.push(new Block(x * 40 + 1750, y * 40 - 300, "#111111"));
-            blocks.push(new Block(x * 40 + 1000, y * 40 - 1000, "#111111"));
-            blocks.push(new Block(x * 40 + 1750, y * 40 - 1000, "#111111"));
+            blocks.push(new Block(x * 40 + 1000, y * 40 - 300, "#111111", externalImages.blockImageDirt));
+            blocks.push(new Block(x * 40 + 1750, y * 40 - 300, "#111111", externalImages.blockImageDirt));
+            blocks.push(new Block(x * 40 + 1000, y * 40 - 1000, "#111111", externalImages.blockImageDirt));
+            blocks.push(new Block(x * 40 + 1750, y * 40 - 1000, "#111111", externalImages.blockImageDirt));
         }
     }
-    
     for (let i = 0; i < 100; i++) {
-        blocks.push(new Block(i * 40 + 4000, -300, "#111111"));
-        blocks.push(new Block(i * 40 + 4000, -500, "#111111"));
+        blocks.push(new Block(i * 40 + 4000, -300, "#111111", externalImages.blockImageGrass));
+        blocks.push(new Block(i * 40 + 4000, -500, "#111111", externalImages.blockImageGrass));
     }
-    for (let i = 0; i < 5; i++) {
-        
-    }
-    
-    for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 + 1360, 20, "#111111"));
-
+    for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 + 1360, 20, "#111111", externalImages.blockImageGrass));
     for (let i = -100; i < 500; i++) {
-        blocks.push(new Block(i * 40, 220, "#111111"));
-        if (i % 20 == 0) blocks.push(new Block(i * 40, 180, "#111111"));
+        blocks.push(new Block(i * 40, 220, "#111111", externalImages.blockImageGrass));
+        if (i % 20 == 0) blocks.push(new Block(i * 40, 180, "#111111", externalImages.blockImageGrass));
     }
     for (let i = 0; i < 40; i++) {
-        blocks.push(new Block(i * 40 - 2000, 0, "#111111"));
-        blocks.push(new Block(i * 40 - 2000, -1000, "#111111"));
+        blocks.push(new Block(i * 40 - 2000, 0, "#111111", externalImages.blockImageBlueDirt));
+        blocks.push(new Block(i * 40 - 2000, -1000, "#111111", externalImages.blockImageGrass));
     }
     for (let i = 0; i < 26; i++) {
-        blocks.push(new Block(-2000, i * 40 - 1000, "#111111"));
-        blocks.push(new Block(-400, i * 40 - 1000, "#111111"));
+        blocks.push(new Block(-2000, i * 40 - 1000, "#111111", externalImages.blockImageDirt));
+        blocks.push(new Block(-400, i * 40 - 1000, "#111111", externalImages.blockImageDirt));
     }
 
     camera = new Camera(canvas, sprite);
@@ -202,47 +226,45 @@ function initializeWorld () {
     animate();
 }
 
-function loadImages () {
-    images.spriteImage.src = "images/superMeatBoy.png";
-    images.spriteImage.onload = () => {imageLoadCheck();}
-    images.planetImage.src = "images/redPlanet.svg";
-    images.planetImage.onload = () => {imageLoadCheck();}
-}
-
-function imageLoadCheck () {
-    imagesLoadedCount++;
-    if (imagesLoadedCount == imageCount) initializeWorld();
-}
-
 function animate () {
     gameRunning = true;
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
-    camera.update(canvas);
+    /*  UPDATE ORDER
+        images
+        sprite
+        particles
+        text
+        gravityPoints
+        blocks
+        camera
+    */
+    for (let image of images) image.update(context, camera);
+    sprite.update(context, physics, camera, blocks, gravityPoints);
     particleCollisions(particles);
     for (let i = 0; i < particles.length; i++) {
         particles[i].update(context, physics, camera);
         if (particles[i].dead) particles.splice(i, 1);
     }
     if (particles.length > maxParticles) particles.splice(0, particles.length - maxParticles);
-    sprite.update(context, physics, camera, blocks, gravityPoints);
     for (let t of text) t.update(context, camera);
     for (let point of gravityPoints) point.update(context, camera);
     for (let i = 0; i < blocks.length; i++) {
         blocks[i].update(context, gravityPoints, physics, camera);
         if (blocks[i].dead) blocks.splice(i, 1);
     }
+    camera.update(canvas);
     
     if (sprite.dead) {
-        cancelAnimationFrame(animationID);
         gameRunning = false;
+        cancelAnimationFrame(animationID);
         initializeWorld();
     }
     
     if (Date.now() - inputTimeStamp > timeTorRestart && startPressed) {
-        cancelAnimationFrame(animationID);
         gameRunning = false;
+        cancelAnimationFrame(animationID);
         initializeWorld();
     }
 }

@@ -132,7 +132,7 @@ function Sprite (x, y, image) {
         
         this.x += this.xVelocity;
         this.y += this.yVelocity;
-        //camera.update(canvas);
+        camera.update(canvas);
         //this.x = -19.5;
         //this.y = -19.5 + 200;
         this.draw(context, camera);
