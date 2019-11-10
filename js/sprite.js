@@ -130,7 +130,6 @@ function Sprite (x, y, image) {
         
         this.checkBlockCollisions(blocks);
         
-        this.xVelocity = 1;
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         camera.update(canvas);

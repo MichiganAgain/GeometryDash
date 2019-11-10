@@ -16,6 +16,27 @@ function Camera (canvas, trackedObject) {
     }
 }
 
-function FocusPoint () {
+function FocusPoint (p1, p2, frames) {  // where p1 is the start point and p2 is freakin common sense lmao
+    this.p1 = p1;
+    this.p2 = p2;
+    this.frames = frames;
+    this.progress = 0;
+    this.velocity = 10;
+    this.distance = Math.sqrt((p1.x - p2.x)**2, (p1.y - p2.y));
+    this.x = p1.x;
+    this.y = p1.y;
+    this.SIZE = 0;
+    this.traveling = true;
     
+    this.f = function (x) { // y = f(x)
+        return (this.gradient * x) + (this.gradient * -(p1.x)) + p1.y;
+    }
+    
+    this.update = function () {
+        if (this.traveling) {
+            this.x = p1.x + (p2.x - p1.x) * this.progress;
+            this.y = p1.y + (p2.y - p1.y) * this.progress;
+            this.progress += this.velocity / this.distance;
+        }
+    }
 }

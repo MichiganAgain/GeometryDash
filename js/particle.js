@@ -30,6 +30,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
                     this.yVelocity *= -0.5;
                     this.xVelocity /= block.friction;
                     this.y = block.y + block.SIZE + this.radius + this.GUARD;
+                    if (this.lethal == false) {this.dead = true; this.yVelocity = 0;}
                 }
             }
             if (this.y + this.radius >= block.y && this.y - this.radius <= block.y + block.SIZE) {
@@ -37,11 +38,13 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
                     this.xVelocity *= -0.5;
                     this.yVelocity /= block.friction;
                     this.x = block.x - this.radius - this.GUARD;
+                    if (this.lethal == false) {this.dead = true; this.xVelocity = 0;}
                 }
                 if (this.x - this.radius >= block.x + block.SIZE && this.x - this.radius + this.xVelocity <= block.x + block.SIZE) {   // right collision
                     this.xVelocity *= -0.5;
                     this.yVelocity /= block.friction;
                     this.x = block.x + block.SIZE + this.radius + this.GUARD;
+                    if (this.lethal == false) {this.dead = true; this.xVelocity = 0;}
                 }
             }
         }
@@ -119,6 +122,6 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         
         this.draw(context, camera);
         //this.color = this.colorGen();
-        this.color = "#FFFFFF";
+        //this.color = "#FFFFFF";
     }
 }
