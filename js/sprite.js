@@ -87,7 +87,7 @@ function Sprite (x, y, image) {
             let yDiff = point.y - (this.y + (this.SIZE / 2));
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
 
-            if (distanceFromPoint >= 0) {
+            if (distanceFromPoint <= canvas.width / 2 + point.radius) {
                 let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
                 let theta = Math.atan2(yDiff, xDiff);
                 this.xVelocity += force * Math.cos(theta);

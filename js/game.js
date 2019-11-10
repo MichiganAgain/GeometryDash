@@ -14,8 +14,8 @@ function resizeCanvas () {
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
 const maxParticles = 10;
-let externalImages = {spriteImage: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image()};
-const imageCount = 7;
+let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image()};
+const imageCount = 12;
 let imagesLoadedCount = 0;
 var sprite;
 var particles;
@@ -23,7 +23,9 @@ var blocks;
 var gravityPoints;
 var text;
 var images;
+var background;
 var camera;
+var focusPoints;
 var animationID;
 var gameRunning = false;
 var startPressed = false;
@@ -60,6 +62,8 @@ window.addEventListener("keyup", (event) => {
 function loadImages () {
     externalImages.spriteImage.src = "images/superMeatBoy.png";
     externalImages.spriteImage.onload = () => {imageLoadCheck();}
+    externalImages.spriteImageGIF.src = "images/superMeatBoy.gif";
+    externalImages.spriteImageGIF.onload = () => {imageLoadCheck();}
     externalImages.planetImage.src = "images/redPlanet.svg";
     externalImages.planetImage.onload = () => {imageLoadCheck();}
     externalImages.blockImageGrass.src = "images/grass.png";
@@ -68,8 +72,16 @@ function loadImages () {
     externalImages.blockImageDirt.onload = () => {imageLoadCheck();}
     externalImages.blockImageBlueDirt.src = "images/blueDirt.png";
     externalImages.blockImageBlueDirt.onload = () => {imageLoadCheck();}
+    externalImages.blockImageDarkDirt.src = "images/darkDirt.png";
+    externalImages.blockImageDarkDirt.onload = () => {imageLoadCheck();}
     externalImages.orangeMushroom.src = "images/orangeMushroom.png";
     externalImages.orangeMushroom.onload = () => {imageLoadCheck();}
+    externalImages.tree.src = "images/tree.png";
+    externalImages.tree.onload = () => {imageLoadCheck();}
+    externalImages.smallBush.src = "images/smallBush.png";
+    externalImages.smallBush.onload = () => {imageLoadCheck();}
+    externalImages.bushyTreeLeft.src = "images/bushyTreeLeft.png";
+    externalImages.bushyTreeLeft.onload = () => {imageLoadCheck();}
     externalImages.backgroundImage.src = "images/FlatNightBG.png";
     externalImages.backgroundImage.onload = () => {imageLoadCheck();}
 }
@@ -89,7 +101,7 @@ function shoot () {
 }
 
 // this is a really dumb function that I had to add to fix balls going through blocks  Now it messes everything up but I'm keeping it :D
-function particleBlockCollision (particle, x, y, negate) { // even tho there are now two freaking particle collision functions
+function particleBlockCollision (particle, x, y, negate) { // even tho there are now two freaking particle block collision functions
     for (let block of blocks) {
         if (particle.x + particle.radius >= block.x && particle.x - particle.radius <= block.x + block.SIZE) {
                 if (particle.y + particle.radius <= block.y && particle.y + particle.radius + ((negate == false) ? y: -y) >= block.y) {  // top collision
@@ -160,65 +172,33 @@ function initializeWorld () {
     gravityPoints = [];
     text = [];
     images = [];
+    focusPoints = [];
     
-    images.push(new myImage(-20, 0, canvas.width + 40, canvas.height, "absolute", externalImages.backgroundImage, (t) => {t = (t/180) * Math.PI; return Math.sin(t/1) * 10}));
+    background = new myImage(-20, 0, canvas.width + 40, canvas.height, "absolute", externalImages.backgroundImage, (t) => {t = (t/180) * Math.PI; return Math.sin(t/1) * 10});
     images.push(new myImage(-1500, -100, 100, 100, null, externalImages.spriteImage));
     images.push(new myImage(-1400, -30, 32, 32, null, externalImages.orangeMushroom));
     images.push(new myImage(-1532, -30, 32, 32, null, externalImages.orangeMushroom));
+    images.push(new myImage(-1350, -200, 200, 200, null, externalImages.bushyTreeLeft));
+    images.push(new myImage(-1650, -200, 100, 200, null, externalImages.tree));
+    images.push(new myImage(-650, -228, 27*2, 14*2, null, externalImages.smallBush));
     
     gravityPoints.push(new GravityPoint(-1000, -300, externalImages.planetImage, 70, 100000000000));
     gravityPoints.push(new GravityPoint(700, -400, externalImages.planetImage, 70, 100000000000));
     gravityPoints.push(new GravityPoint(1575, -420, externalImages.planetImage, 70, 100000000000));
     gravityPoints[0].teleportTo = gravityPoints[1];
-    particles.push(new Particle(-1000, -470, 5.5, 0, 10, false, "#00FFFF"));
+    particles.push(new Particle(-1050, -450, 7, 0, 10, false, "#00FFFF"));
     
-    gravityPoints[0].text.push(new Text("Jump in to ESCAPE", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 20, null, null, (t) => {
-        t = (t / 180) * Math.PI;
-        return 10 * Math.sin(t * 3);
-    }, {x: false, y: true}));
-    gravityPoints[1].text.push(new Text("Shoot black holes for fun :P", gravityPoints[1].x, gravityPoints[1].y - gravityPoints[1].radius, "Bungee Shade", 50, null, null, (t) => {
+    gravityPoints[0].text.push(new Text("Jump in to ESCAPE", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 30, null, null, (t) => {
         t = (t / 180) * Math.PI;
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
     
-    text.push(new Text("GO THIS WAY :D ->", 2500, -400, "Bungee Shade", 50, null, (t) => {
-        return Math.sin(t / 10) * Math.random() * 1000;
-    }, (t) => {
-        t = (t / 180) * Math.PI;
-        return 50 * Math.sin(t * 5);
-    }, {x: true, y: false}));
-    text.push(new Text("Vote for me hehe :P <3", 4000, -400, "Bungee Shade", 50, null, (t) => {
-        return Math.sin(t / 10) * Math.random() * 1000;
-    }, (t) => {
-        t = (t / 180) * Math.PI;
-        return 50 * Math.sin(t * 5);
-    }, {x: true, y: true}));
-    
-    for (let x = 0; x < 10; x++) {
-        for (let y = 0; y < 10; y++) {
-            blocks.push(new Block(x * 40 + 1000, y * 40 - 300, "#111111", externalImages.blockImageDirt));
-            blocks.push(new Block(x * 40 + 1750, y * 40 - 300, "#111111", externalImages.blockImageDirt));
-            blocks.push(new Block(x * 40 + 1000, y * 40 - 1000, "#111111", externalImages.blockImageDirt));
-            blocks.push(new Block(x * 40 + 1750, y * 40 - 1000, "#111111", externalImages.blockImageDirt));
-        }
+    for (let i = -10; i < 500; i++) {
+        blocks.push(new Block(i * 40, 0, "#111111", externalImages.blockImageBlueDirt));
+        if (i % 20 == 0) blocks.push(new Block(i * 40, -40, "#111111", externalImages.blockImageGrass));
     }
-    for (let i = 0; i < 100; i++) {
-        blocks.push(new Block(i * 40 + 4000, -300, "#111111", externalImages.blockImageGrass));
-        blocks.push(new Block(i * 40 + 4000, -500, "#111111", externalImages.blockImageGrass));
-    }
-    for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 + 1360, 20, "#111111", externalImages.blockImageGrass));
-    for (let i = -100; i < 500; i++) {
-        blocks.push(new Block(i * 40, 220, "#111111", externalImages.blockImageGrass));
-        if (i % 20 == 0) blocks.push(new Block(i * 40, 180, "#111111", externalImages.blockImageGrass));
-    }
-    for (let i = 0; i < 40; i++) {
-        blocks.push(new Block(i * 40 - 2000, 0, "#111111", externalImages.blockImageBlueDirt));
-        blocks.push(new Block(i * 40 - 2000, -1000, "#111111", externalImages.blockImageGrass));
-    }
-    for (let i = 0; i < 26; i++) {
-        blocks.push(new Block(-2000, i * 40 - 1000, "#111111", externalImages.blockImageDirt));
-        blocks.push(new Block(-400, i * 40 - 1000, "#111111", externalImages.blockImageDirt));
-    }
+    for (let i = 0; i < 40; i++) blocks.push(new Block(i * 40 - 2000, 0, "#111111", externalImages.blockImageBlueDirt));
+    for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 - 700, -200, "#111111", externalImages.blockImageGrass));
 
     camera = new Camera(canvas, sprite);
     inputTimeStamp = Date.now();
@@ -230,16 +210,10 @@ function animate () {
     gameRunning = true;
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    /*  UPDATE ORDER
-        images
-        sprite
-        particles
-        text
-        gravityPoints
-        blocks
-        camera
-    */
+
+    background.width = canvas.width + 40;
+    background.height = canvas.height;
+    background.update(context, camera);
     for (let image of images) image.update(context, camera);
     sprite.update(context, physics, camera, blocks, gravityPoints);
     particleCollisions(particles);
