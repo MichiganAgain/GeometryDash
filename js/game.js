@@ -13,7 +13,7 @@ function resizeCanvas () {
 
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
-const maxParticles = 10;
+const maxParticles = 30;
 let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image()};
 const imageCount = 12;
 let imagesLoadedCount = 0;
@@ -30,6 +30,7 @@ var animationID;
 var gameRunning = false;
 var startPressed = false;
 var inputTimeStamp = Date.now();
+var t = 0;
 var timeTorRestart = 1000000;
 var mouseX = 0;
 var mouseY = 0;
@@ -193,9 +194,9 @@ function initializeWorld () {
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
     
-    for (let i = -10; i < 500; i++) {
+    for (let i = -10; i < 100; i++) {
         blocks.push(new Block(i * 40, 0, "#111111", externalImages.blockImageBlueDirt));
-        if (i % 20 == 0) blocks.push(new Block(i * 40, -40, "#111111", externalImages.blockImageGrass));
+        //if (i % 20 == 0) blocks.push(new Block(i * 40, -40, "#111111", externalImages.blockImageGrass));
     }
     for (let i = 0; i < 40; i++) blocks.push(new Block(i * 40 - 2000, 0, "#111111", externalImages.blockImageBlueDirt));
     for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 - 700, -200, "#111111", externalImages.blockImageGrass));
@@ -210,6 +211,11 @@ function animate () {
     gameRunning = true;
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (t++ >= 200) {
+        t = 0;
+        particles.push(new Particle(sprite.x + (Math.random() * canvas.width) - canvas.width / 2, sprite.y - canvas.height, Math.random() * 14 - 7, Math.random() * 15 + 5, 3, false, "#00FFFF"));
+    }
 
     background.width = canvas.width + 40;
     background.height = canvas.height;
@@ -230,7 +236,7 @@ function animate () {
     }
     camera.update(canvas);
     
-    if (sprite.dead) {
+    if (sprite.dead || sprite.x > 3000) {
         gameRunning = false;
         cancelAnimationFrame(animationID);
         initializeWorld();

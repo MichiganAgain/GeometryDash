@@ -24,6 +24,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
                     this.yVelocity *= -0.5;
                     this.xVelocity /= block.friction;
                     this.y = block.y - this.radius - this.GUARD;
+                    if (this.lethal == false) {this.dead = true; this.yVelocity = 0;}
                 }
                 if (this.y - this.radius >= block.y + block.SIZE && this.y - this.radius + this.yVelocity <= block.y + block.SIZE) {    // bottom collision
                     this.yVelocity *= -0.5;
@@ -55,7 +56,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
             let distanceFromPoint = Math.sqrt((xDiff)**2 + (yDiff)**2);
             if (distanceFromPoint <= point.radius - this.radius) {
                 this.dead = true
-                point.radius += this.radius / 5;
+                point.radius += 2;
                 point.mass += 5000000000;
             }
 
@@ -79,7 +80,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
             context.beginPath();
             let contrast = (i / this.maxTrailLength) * 255;
             context.fillStyle = "#" + contrast.toString(16) + contrast.toString(16) + contrast.toString(16);
-            context.arc(this.trail[i].x + camera.xOffset, this.trail[i].y + camera.yOffset, 3 + (i/this.maxTrailLength) * 6, 0, Math.PI * 2, false);
+            context.arc(this.trail[i].x + camera.xOffset, this.trail[i].y + camera.yOffset, (i/this.maxTrailLength) * this.radius, 0, Math.PI * 2, false);
             context.fill();
             context.stroke();
         }
