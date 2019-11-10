@@ -42,6 +42,11 @@ window.addEventListener("click", (event) => {
     mouseY = event.clientY - camera.yOffset; 
     shoot();
 });
+window.addEventListener("ontouchstart", (event) => {
+    mouseX = event.touches[0].clientX - camera.xOffset;
+    mouseY = event.touches[0].clientY - camera.yOffset;
+    shoot();
+});
 window.addEventListener("mousemove", (event) => {
     mouseX = event.clientX - camera.xOffset;
     mouseY = event.clientY - camera.yOffset;
