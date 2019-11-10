@@ -14,8 +14,8 @@ function resizeCanvas () {
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
 const maxParticles = 50;
-let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image()};
-const imageCount = 13;
+let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image()};
+const imageCount = 15;
 let imagesLoadedCount = 0;
 var sprite;
 var particles;
@@ -32,6 +32,7 @@ var gameRunning = false;
 var startPressed = false;
 var inputTimeStamp = Date.now();
 var t = 0;
+var countdown = Math.floor(Math.random() * 200);
 var timeTorRestart = 1000000;
 var mouseX = 0;
 var mouseY = 0;
@@ -81,6 +82,10 @@ function loadImages () {
     externalImages.blockImageBlueDirt.onload = () => {imageLoadCheck();}
     externalImages.blockImageDarkDirt.src = "images/darkDirt.png";
     externalImages.blockImageDarkDirt.onload = () => {imageLoadCheck();}
+    externalImages.topDungeonBlock.src = "images/topDungeonBlock.png";
+    externalImages.topDungeonBlock.onload = () => {imageLoadCheck();}
+    externalImages.dungeonBlock.src = "images/dungeonBlock.png";
+    externalImages.dungeonBlock.onload = () => {imageLoadCheck();}
     externalImages.orangeMushroom.src = "images/orangeMushroom.png";
     externalImages.orangeMushroom.onload = () => {imageLoadCheck();}
     externalImages.tree.src = "images/tree.png";
@@ -186,10 +191,15 @@ function initializeWorld () {
     background = new myImage(-20, 0, canvas.width + 40, canvas.height, "absolute", externalImages.backgroundImage, false, (t) => {t = (t/180) * Math.PI; return Math.sin(t/1) * 10});
     images.push(new myImage(-1500, -100, 100, 100, null, externalImages.spriteImage, false));
     clouds.push(new myImage(-2000, -500, 200, 100, null, externalImages.cloud, true));
+    clouds.push(new myImage(-1500, -500, 200, 100, null, externalImages.cloud, true));
     images.push(new myImage(-1400, -30, 32, 32, null, externalImages.orangeMushroom, false));
     images.push(new myImage(-1532, -30, 32, 32, null, externalImages.orangeMushroom, false));
+    images.push(new myImage(-1000, -30, 32, 32, null, externalImages.orangeMushroom, false));
+    images.push(new myImage(-900, -30, 32, 32, null, externalImages.orangeMushroom, false));
     images.push(new myImage(-1350, -200, 200, 200, null, externalImages.bushyTreeLeft, false));
     images.push(new myImage(-1650, -200, 100, 200, null, externalImages.tree, false));
+    images.push(new myImage(-1000, -200, 100, 200, null, externalImages.tree, false));
+    images.push(new myImage(-800, -200, 100, 200, null, externalImages.tree, false));
     images.push(new myImage(-650, -228, 27*2, 14*2, null, externalImages.smallBush, false));
     images.push(new myImage(-400, -228, 27*2, 14*2, null, externalImages.smallBush, false));
     images.push(new myImage(-100, -228, 27*2, 14*2, null, externalImages.smallBush, false));
@@ -212,6 +222,8 @@ function initializeWorld () {
     for (let i = 0; i < 40; i++) blocks.push(new Block(i * 40 - 2000, 0, "#111111", externalImages.blockImageBlueDirt));
     for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 - 700, -200, "#111111", externalImages.blockImageGrass));
     for (let i = 0; i < 10; i++) blocks.push(new Block(i * 40 - 200, -200, "#111111", externalImages.blockImageGrass));
+    for (let i = 0; i < 15; i++) blocks.push(new Block(-2000, i * -40, "#111111", externalImages.dungeonBlock));
+    blocks.push(new Block(-2000, -40 * 15, "#111111", externalImages.topDungeonBlock));
 
     this.focusPoint = new FocusPoint({x: sprite.x, y: sprite.y + 100}, {x: gravityPoints[0].x, y: gravityPoints[0].y}, 1000);
     camera = new Camera(canvas, sprite);
@@ -225,8 +237,9 @@ function animate () {
     animationID = requestAnimationFrame(animate);
     context.clearRect(0, 0, canvas.width, canvas.height);
     
-    if (t++ >= 200) {
+    if (t++ >= countdown) {
         t = 0;
+        countdown = Math.floor(Math.random() * 500);
         particles.push(new Particle(sprite.x + (Math.random() * canvas.width) - canvas.width / 2, sprite.y - canvas.height, Math.random() * 14 - 7, Math.random() * 15 + 10, 5, false, "#FFFFFF"));
     }
 
