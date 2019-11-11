@@ -17,6 +17,7 @@ const maxParticles = 50;
 let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image()};
 const imageCount = 15;
 let imagesLoadedCount = 0;
+var mouseTrail;
 var sprite;
 var particles;
 var blocks;
@@ -191,7 +192,7 @@ function initializeWorld () {
     background = new myImage(-20, 0, canvas.width + 40, canvas.height, "absolute", externalImages.backgroundImage, false, (t) => {t = (t/180) * Math.PI; return Math.sin(t/1) * 10});
     images.push(new myImage(-1500, -100, 100, 100, null, externalImages.spriteImage, false));
     clouds.push(new myImage(-2000, -500, 200, 100, null, externalImages.cloud, true));
-    clouds.push(new myImage(-1500, -500, 200, 100, null, externalImages.cloud, true));
+    //clouds.push(new myImage(-1500, -500, 200, 100, null, externalImages.cloud, true));
     images.push(new myImage(-1400, -30, 32, 32, null, externalImages.orangeMushroom, false));
     images.push(new myImage(-1532, -30, 32, 32, null, externalImages.orangeMushroom, false));
     images.push(new myImage(-1000, -30, 32, 32, null, externalImages.orangeMushroom, false));
@@ -225,7 +226,7 @@ function initializeWorld () {
     for (let i = 0; i < 15; i++) blocks.push(new Block(-2000, i * -40, "#111111", externalImages.dungeonBlock));
     blocks.push(new Block(-2000, -40 * 15, "#111111", externalImages.topDungeonBlock));
 
-    this.focusPoint = new FocusPoint({x: sprite.x, y: sprite.y + 100}, {x: gravityPoints[0].x, y: gravityPoints[0].y}, 1000);
+    this.focusPoint = new FocusPoint({x: -3000, y: gravityPoints[0].y}, {x: sprite.x, y: sprite.y + 100}, 1000);
     camera = new Camera(canvas, sprite);
     inputTimeStamp = Date.now();
     startPressed = false;
