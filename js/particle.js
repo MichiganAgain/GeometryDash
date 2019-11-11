@@ -85,7 +85,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
             context.fillStyle = "#" + contrast.toString(16) + contrast.toString(16) + contrast.toString(16);
             context.arc(this.trail[i].x + camera.xOffset, this.trail[i].y + camera.yOffset, (i/this.maxTrailLength) * this.radius, 0, Math.PI * 2, false);
             context.fill();
-            context.stroke();
+            //context.stroke();
         }
         
         context.fillStyle = this.color;
@@ -93,7 +93,7 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
         context.beginPath();
         context.arc(this.x + camera.xOffset, this.y + camera.yOffset, this.radius, 0, 2 * Math.PI, false);
         context.fill();
-        context.stroke();
+        //context.stroke();
     }
     
     this.update = function (context, physics, camera) {

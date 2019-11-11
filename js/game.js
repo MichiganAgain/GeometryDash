@@ -17,7 +17,9 @@ const maxParticles = 50;
 let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image()};
 const imageCount = 15;
 let imagesLoadedCount = 0;
-var mouseTrail;
+var audio = {music: new Audio("audio/XilentftDiamondEyesAnimation.mp3")};
+var mouseTrail = [];
+const maxMouseTrailLength = 10;
 var sprite;
 var particles;
 var blocks;
@@ -37,9 +39,13 @@ var countdown = Math.floor(Math.random() * 200);
 var timeTorRestart = 1000000;
 var mouseX = 0;
 var mouseY = 0;
+var clientX;
+var clientY;
 
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("click", (event) => {
+    clientX = event.clientX;
+    clientY = event.clientY;
     mouseX = event.clientX - camera.xOffset;
     mouseY = event.clientY - camera.yOffset; 
     shoot();
@@ -50,6 +56,8 @@ window.addEventListener("ontouchstart", (event) => {
     shoot();
 });
 window.addEventListener("mousemove", (event) => {
+    clientX = event.clientX;
+    clientY = event.clientY;
     mouseX = event.clientX - camera.xOffset;
     mouseY = event.clientY - camera.yOffset;
 });
@@ -69,6 +77,9 @@ window.addEventListener("keyup", (event) => {
 });
 
 function loadImages () {
+    audio.music.autoplay = true;
+    audio.music.load();
+    
     externalImages.spriteImage.src = "images/superMeatBoy.png";
     externalImages.spriteImage.onload = () => {imageLoadCheck();}
     externalImages.spriteImageGIF.src = "images/superMeatBoy.gif";
@@ -107,12 +118,12 @@ function imageLoadCheck () {
 }
 
 function shoot () {
-    let xDiff = mouseX - sprite.x;
-    let yDiff = mouseY - sprite.y;
+    let xDiff = mouseX - (sprite.x + sprite.SIZE / 2);
+    let yDiff = mouseY - (sprite.y + sprite.SIZE / 2);
     //let power = Math.sqrt(xDiff**2 + yDiff**2);
     let power = 30;
     let theta = Math.atan2(yDiff, xDiff);
-    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 5, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 10, true, "#FFFFFF"));
+    particles.push(new Particle(sprite.x + sprite.SIZE / 2, sprite.y + sprite.SIZE / 5, Math.cos(theta) * power + sprite.xVelocity, Math.sin(theta) * power + sprite.yVelocity, 8, true, "#FFFFFF"));
 }
 
 // this is a really dumb function that I had to add to fix balls going through blocks  Now it messes everything up but I'm keeping it :D
@@ -211,7 +222,7 @@ function initializeWorld () {
     gravityPoints[0].teleportTo = gravityPoints[1];
     particles.push(new Particle(-1050, -450, 7, 0, 10, false, "#00FFFF"));
     
-    gravityPoints[0].text.push(new Text("Jump in to ESCAPE", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Bungee Shade", 30, null, null, (t) => {
+    gravityPoints[0].text.push(new Text("Jump in to ESCAPE", gravityPoints[0].x, gravityPoints[0].y - gravityPoints[0].radius, "Erica One", 30, null, null, (t) => {
         t = (t / 180) * Math.PI;
         return 10 * Math.sin(t * 3);
     }, {x: false, y: true}));
@@ -230,6 +241,7 @@ function initializeWorld () {
     camera = new Camera(canvas, sprite);
     inputTimeStamp = Date.now();
     startPressed = false;
+    audio.music.load();
     animate();
 }
 
@@ -247,7 +259,10 @@ function animate () {
     background.width = canvas.width + 40;
     background.height = canvas.height;
     background.update(context, camera);
-    for (let image of images) image.update(context, camera);
+    for (let i = 0; i < images.length; i++) {
+        images[i].update(context, camera);
+        if (images[i].dead) images.splice(i, 1);
+    }
     sprite.update(context, physics, camera, blocks, gravityPoints);
     particleCollisions(particles);
     for (let i = 0; i < particles.length; i++) {
@@ -261,7 +276,10 @@ function animate () {
         blocks[i].update(context, gravityPoints, physics, camera);
         if (blocks[i].dead) blocks.splice(i, 1);
     }
-    for (let cloud of clouds) cloud.update(context, camera);
+    for (let i = 0; i < clouds.length; i++) {
+        clouds[i].update(context, camera);
+        if (clouds[i].dead) clouds.splice(i, 1);
+    }
     focusPoint.p2.x = sprite.x;
     focusPoint.p2.y = sprite.y;
     focusPoint.update();
@@ -279,5 +297,15 @@ function animate () {
         gameRunning = false;
         cancelAnimationFrame(animationID);
         initializeWorld();
+    }
+    
+    mouseTrail.push({x: clientX, y: clientY});
+    if (mouseTrail.length > maxMouseTrailLength) mouseTrail.splice(0, 1);
+    for (let i = 0; i < mouseTrail.length; i++) {
+        context.beginPath();
+        let contrast = (i / maxMouseTrailLength) * 255;
+        context.fillStyle = "#" + contrast.toString(16) + contrast.toString(16) + contrast.toString(16);
+        context.arc(mouseTrail[i].x, mouseTrail[i].y, (i / maxMouseTrailLength) * 7, 0, Math.PI * 2, false);
+        context.fill();
     }
 }

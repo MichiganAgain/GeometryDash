@@ -4,6 +4,7 @@
         
         <link href="https://fonts.googleapis.com/css?family=Faster+One|Press+Start+2P&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Bungee+Shade&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Erica+One&display=swap" rel="stylesheet">
     
         <style>
         
@@ -35,6 +36,10 @@
                 transform: translate(-50%, -50%);
             }
             
+            canvas:hover {
+                cursor: none;
+            }
+            
             .text {
                 font-size: 300%;
                 position: absolute;
@@ -51,9 +56,6 @@
                     opacity: 1;
                 }
             }
-            
-            @import url(https://fonts.googleapis.com/css?family=Bungee+Shade&display=swap);
-            /*  font-family: 'Bungee Shade', cursive;  */
         
         </style>
     
@@ -62,13 +64,7 @@
     <body onload="pageLoad()">
         
         <canvas id="mainCanvas"></canvas>
-        
-        <audio autoplay loop>
 
-            <source src="audio/XilentftDiamondEyesAnimation.mp3" type="audio/mpeg">
-        
-        </audio>
-        
         <script src="js/sprite.js"></script>
         <script src="js/block.js"></script>
         <script src="js/camera.js"></script>
