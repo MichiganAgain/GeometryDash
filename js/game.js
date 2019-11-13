@@ -305,7 +305,7 @@ function animate () {
         context.beginPath();
         let contrast = (i / maxMouseTrailLength) * 255;
         context.fillStyle = "#" + contrast.toString(16) + contrast.toString(16) + contrast.toString(16);
-        context.arc(mouseTrail[i].x, mouseTrail[i].y, (i / maxMouseTrailLength) * 7, 0, Math.PI * 2, false);
+        context.arc(mouseTrail[i].x, mouseTrail[i].y, (i / maxMouseTrailLength) * 10, 0, Math.PI * 2, false);
         context.fill();
     }
 }

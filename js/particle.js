@@ -63,10 +63,12 @@ function Particle (x, y, xVelocity, yVelocity, radius, lethal, color) {
                 point.mass += 5000000000;
             }
 
-            let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
-            let theta = Math.atan2(yDiff, xDiff);
-            this.xVelocity += force * Math.cos(theta);
-            this.yVelocity += force * Math.sin(theta);
+            if (distanceFromPoint <= canvas.width / 2 + point.radius) {
+                let force = (physics.gravitationalConstant * this.mass * point.mass) / (distanceFromPoint);
+                let theta = Math.atan2(yDiff, xDiff);
+                this.xVelocity += force * Math.cos(theta);
+                this.yVelocity += force * Math.sin(theta);
+            }
         }
     }
     
