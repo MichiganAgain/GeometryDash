@@ -38,7 +38,7 @@ function myImage (x, y, width, height, position, imageData, cloud, movementFunct
         }
         if (this.cloud) {
             if (this.t % 20 == 0) particles.push(new Particle((this.x + this.width / 2) + (Math.random() * this.width - this.width / 2), this.y + this.height / 2, 0, (this.snowy == 1) ? 5: 0, 4, (this.snowy == 1) ? false: true, (this.snowy == 1) ? "#FFFFFF": "#0077FF"));
-            for (let i = 0; i < 20; i++) if (Math.floor(Math.random() * 100) == 0) particles.push(new Particle((this.x + this.width / 2) + (Math.random() * this.width - this.width / 2), this.y + this.height / 2, 0, (this.snowy == 1) ? 5: 0, 4, (this.snowy == 1) ? false: true, (this.snowy == 1) ? "#FFFFFF": "#0077FF"));
+            for (let i = 0; i < 3; i++) if (Math.floor(Math.random() * 100) == 0) particles.push(new Particle((this.x + this.width / 2) + (Math.random() * this.width - this.width / 2), this.y + this.height / 2, 0, (this.snowy == 1) ? 5: 0, 4, (this.snowy == 1) ? false: true, (this.snowy == 1) ? "#FFFFFF": "#0077FF"));
             this.x++;
         }
         if (this.t++ >= 360) this.t = 0;
