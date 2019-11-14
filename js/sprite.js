@@ -1,7 +1,7 @@
-function Sprite (x, y, image) {
+function Sprite (x, y, imageData) {
     this.x = x;
     this.y = y;
-    this.image = image;
+    this.imageData = imageData;
     this.xVelocity = 0;
     this.yVelocity = 0;
     this.movingVelocity = 7;
@@ -17,6 +17,8 @@ function Sprite (x, y, image) {
     this.movingRight = false;
     this.jumping = false;
     this.dead = false;
+    this.currentFrame = 0;
+    this.t = 0;
     
     this.jump = function () {
         if (this.canJumpUp) {
@@ -114,17 +116,21 @@ function Sprite (x, y, image) {
     }
     
     this.draw = function (context, camera) {
-        //context.fillStyle = "#555555";
-        //context.fillRect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
-        //context.stroke();
-        context.drawImage(this.image, 0, 0, this.image.width, this.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
+        let imageWidth = 980 / this.imageData.frames;
+        if (this.imageData.spriteSheet === false) context.drawImage(this.imageData.image, 0, 0, this.imageData.image.width, this.imageData.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
+        else context.drawImage(this.imageData.image, this.currentFrame * imageWidth, 0, imageWidth, this.imageData.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
     }
     
     this.update = function (context, physics, camera, blocks, gravityPoints) {
-        //if (this.canJump) this.xVelocity = this.movingVelocity;
         if (this.jumping) this.jump();
         this.feelGravityEffects(physics, gravityPoints);
         this.adjustToMaximumVelocity(physics);
+        
+        if (this.imageData.spriteSheet && this.canJumpUp && (this.movingLeft || this.movingRight || Math.abs(this.xVelocity) > 0.75)) {
+            this.t++;
+            if (this.t % 6 === 0 && this.canJumpUp) this.currentFrame++;
+            if (this.currentFrame >= this.imageData.frames) this.currentFrame = 0;
+        }
         if (this.movingLeft) this.xVelocity = -this.movingVelocity;
         if (this.movingRight) this.xVelocity = this.movingVelocity;
         
@@ -133,8 +139,11 @@ function Sprite (x, y, image) {
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         camera.update(canvas);
-        //this.x = -19.5;
-        //this.y = -19.5 + 200;
+        
         this.draw(context, camera);
+        
+        //if (this.t % 6 === 0) this.currentFrame++;
+        if (this.currentFrame >= this.imageData.frames - 0) this.currentFrame = 0;
+        if (this.t > 100) this.t = 0;
     }
 }
