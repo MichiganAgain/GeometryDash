@@ -1,7 +1,6 @@
-function Block (x, y, color, image) {
+function Block (x, y, image) {
     this.x = x;
     this.y = y;
-    this.color = color;
     this.image = image;
     this.SIZE = 40;
     this.friction = 1.3;
@@ -19,12 +18,6 @@ function Block (x, y, color, image) {
     }
     
     this.draw = function (context, camera) {
-//        context.fillStyle = this.color;
-//        context.fillRect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
-//        context.stroke();
-//        context.beginPath();
-//        context.rect(this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
-//        context.stroke();
         context.drawImage(this.image, 0, 0, this.image.width, this.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
     }
     

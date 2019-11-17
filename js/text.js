@@ -11,7 +11,7 @@ function Text (text, x, y, font, size, position = null, colorFunc = null, moveme
     this.movementDirection = movementDirection;
     
     this.draw = function (context, camera) {
-        this.offset = this.movementFuntion(this.t);
+        this.offset = (this.movementFunction != null) ? this.movementFuntion(this.t): 0;
         context.textAlign = "center";
         context.textBaseline = "middle";
         context.font = this.size + "px " + this.font;

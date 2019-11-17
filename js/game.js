@@ -12,8 +12,8 @@ function resizeCanvas () {
     canvas.height = window.innerHeight * 1;   // reflects value of CSS for square resolution
 }
 
-let externalImages = {spriteImage: new Image(), spriteImageGIF: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image()};
-const imageCount = 15;
+let externalImages = {spriteImage: new Image(), superMeatBoy: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image(), speechBubble: new Image()};
+const imageCount = 16;
 let imagesLoadedCount = 0;
 var audio = {music: new Audio("audio/XilentftDiamondEyesAnimation.mp3")};
 
@@ -83,8 +83,8 @@ function loadImages () {
     
     externalImages.spriteImage.src = "images/superMeatBoySpriteSheet.png";
     externalImages.spriteImage.onload = () => {imageLoadCheck();}
-    externalImages.spriteImageGIF.src = "images/superMeatBoy.gif";
-    externalImages.spriteImageGIF.onload = () => {imageLoadCheck();}
+    externalImages.superMeatBoy.src = "images/superMeatBoy.png";
+    externalImages.superMeatBoy.onload = () => {imageLoadCheck();}
     externalImages.planetImage.src = "images/redPlanet.svg";
     externalImages.planetImage.onload = () => {imageLoadCheck();}
     externalImages.blockImageGrass.src = "images/grass.png";
@@ -111,6 +111,8 @@ function loadImages () {
     externalImages.backgroundImage.onload = () => {imageLoadCheck();}
     externalImages.cloud.src = "images/cloud.png";
     externalImages.cloud.onload = () => {imageLoadCheck();}
+    externalImages.speechBubble.src = "images/speechBubble.png";
+    externalImages.speechBubble.onload = () => {imageLoadCheck();}
 }
 
 function imageLoadCheck () {
@@ -227,12 +229,6 @@ function animate () {
         clouds[i].update(context, camera);
         if (clouds[i].dead) clouds.splice(i, 1);
     }
-    focusPoint.p2.x = sprite.x;
-    focusPoint.p2.y = sprite.y;
-    focusPoint.update();
-    camera.update(canvas);
-    
-    if (focusPoint.traveling === false) camera.trackedObject = sprite;
     
     if (sprite.dead) {
         gameRunning = false;

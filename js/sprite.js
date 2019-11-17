@@ -15,6 +15,7 @@ function Sprite (x, y, imageData) {
     this.canJumpRight = false;
     this.movingLeft = false;
     this.movingRight = false;
+    this.mostRecentLeft = false;
     this.jumping = false;
     this.dead = false;
     this.currentFrame = 0;
@@ -84,6 +85,7 @@ function Sprite (x, y, imageData) {
     this.feelGravityEffects = function (physics, gravityPoints) {
         this.yVelocity += physics.gravity;
         
+        let accumulatedDownForce = physics.gravity;
         for (let point of gravityPoints) {
             let xDiff = point.x - (this.x + (this.SIZE / 2));
             let yDiff = point.y - (this.y + (this.SIZE / 2));
@@ -94,6 +96,7 @@ function Sprite (x, y, imageData) {
                 let theta = Math.atan2(yDiff, xDiff);
                 this.xVelocity += force * Math.cos(theta);
                 this.yVelocity += force * Math.sin(theta);
+                accumulatedDownForce += force * Math.sin(theta);
             }
 
             if (distanceFromPoint < point.radius) {
@@ -105,6 +108,9 @@ function Sprite (x, y, imageData) {
                 }
             }
         }
+        context.textAlign = "center";
+        context.fillStyle = "black"
+        context.fillText("Down Force: " + (Math.floor(accumulatedDownForce * 1000) / 100), this.x + this.SIZE / 2 + camera.xOffset, this.y + camera.yOffset);
     }
     
     this.adjustToMaximumVelocity = function (physics) {
@@ -116,9 +122,19 @@ function Sprite (x, y, imageData) {
     }
     
     this.draw = function (context, camera) {
+        context.save();
+        if (this.mostRecentLeft === true) {
+            context.scale(1, 1);
+            context.translate((this.x + camera.xOffset), 0);
+        } else {
+            context.scale(-1, 1);
+            context.translate(-(this.x + camera.xOffset + this.SIZE), 0);
+        }
+        
         let imageWidth = 980 / this.imageData.frames;
-        if (this.imageData.spriteSheet === false) context.drawImage(this.imageData.image, 0, 0, this.imageData.image.width, this.imageData.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
-        else context.drawImage(this.imageData.image, this.currentFrame * imageWidth, 0, imageWidth, this.imageData.image.height, this.x + camera.xOffset, this.y + camera.yOffset, this.SIZE, this.SIZE);
+        if (this.imageData.spriteSheet === false) context.drawImage(this.imageData.image, 0, 0, this.imageData.image.width, this.imageData.image.height, 0, this.y + camera.yOffset, this.SIZE, this.SIZE);
+        else context.drawImage(this.imageData.image, this.currentFrame * imageWidth, 0, imageWidth, this.imageData.image.height, 0, this.y + camera.yOffset, this.SIZE, this.SIZE);
+        context.restore();
     }
     
     this.update = function (context, physics, camera, blocks, gravityPoints) {
@@ -133,13 +149,16 @@ function Sprite (x, y, imageData) {
         }
         if (this.movingLeft) this.xVelocity = -this.movingVelocity;
         if (this.movingRight) this.xVelocity = this.movingVelocity;
-        
         this.checkBlockCollisions(blocks);
         
+        if (this.canJumpUp === false) this.currentFrame = 0;
+        if (!(this.movingLeft || this.movingRight) && this.canJumpUp) this.currentFrame = 3;
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         camera.update(canvas);
         
+        if (this.movingLeft === true) this.mostRecentLeft = true;
+        if (this.movingRight) this.mostRecentLeft = false;
         this.draw(context, camera);
         
         //if (this.t % 6 === 0) this.currentFrame++;

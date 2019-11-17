@@ -24,9 +24,10 @@ function myImage (x, y, width, height, position, imageData, cloud, movementFunct
     }
     
     this.draw = function (context, camera) {
-        let imageWidth = this.imageData.image.width / this.imageData.frames;
-        if (this.imageData.spriteSheet === false) context.drawImage(this.imageData.image, 0, 0, this.imageData.image.width, this.imageData.image.height, this.x + ((this.movementFuntion == null) ? 0: this.movementFuntion(this.t)) + ((this.position === "absolute") ? 0: (camera.xOffset - ((camera.trackedObject == sprite) ? sprite.xVelocity: 0))), this.y + ((this.position === "absolute") ? 0: (camera.yOffset - ((camera.trackedObject == sprite) ? sprite.yVelocity: 0))), this.width, this.height);
-        else context.drawImage(this.imageData.image, this.currentFrame * imageWidth, 0, imageWidth, this.imageData.image.height, this.x + ((this.movementFuntion == null) ? 0: this.movementFuntion(this.t)) + ((this.position === "absolute") ? 0: (camera.xOffset - ((camera.trackedObject == sprite) ? sprite.xVelocity: 0))), this.y + ((this.position === "absolute") ? 0: (camera.yOffset - ((camera.trackedObject == sprite) ? sprite.yVelocity: 0))), this.width, this.height);
+        if (this.imageData.spriteSheet === true) {
+            let imageWidth = this.imageData.image.width / this.imageData.frames;
+            context.drawImage(this.imageData.image, this.currentFrame * imageWidth, 0, imageWidth, this.imageData.image.height, this.x + ((this.movementFuntion == null) ? 0: this.movementFuntion(this.t)) + ((this.position === "absolute") ? 0: (camera.xOffset - ((camera.trackedObject == sprite) ? sprite.xVelocity: 0))), this.y + ((this.position === "absolute") ? 0: (camera.yOffset - ((camera.trackedObject == sprite) ? sprite.yVelocity: 0))), this.width, this.height);
+        } else context.drawImage(this.imageData.image, 0, 0, this.imageData.image.width, this.imageData.image.height, this.x + ((this.movementFuntion == null) ? 0: this.movementFuntion(this.t)) + ((this.position === "absolute") ? 0: (camera.xOffset - ((camera.trackedObject == sprite) ? sprite.xVelocity: 0))), this.y + ((this.position === "absolute") ? 0: (camera.yOffset - ((camera.trackedObject == sprite) ? sprite.yVelocity: 0))), this.width, this.height);
     }
     
     this.update = function (context, camera) {
