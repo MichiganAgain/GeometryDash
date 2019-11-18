@@ -110,7 +110,7 @@ function Sprite (x, y, imageData) {
         }
         context.textAlign = "center";
         context.fillStyle = "black"
-        context.fillText("Down Force: " + (Math.floor(accumulatedDownForce * 1000) / 100), this.x + this.SIZE / 2 + camera.xOffset, this.y + camera.yOffset);
+        //context.fillText("Down Force: " + (Math.floor(accumulatedDownForce * 1000) / 100), this.x + this.SIZE / 2 + camera.xOffset, this.y + camera.yOffset);
     }
     
     this.adjustToMaximumVelocity = function (physics) {

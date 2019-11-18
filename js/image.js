@@ -1,4 +1,4 @@
-function myImage (x, y, width, height, position, imageData, cloud, movementFunction = null) {
+function myImage (x, y, width, height, position, imageData, killable, cloud, movementFunction = null) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -8,6 +8,7 @@ function myImage (x, y, width, height, position, imageData, cloud, movementFunct
     this.snowy = Math.floor(Math.random() * 2);
     this.movementFuntion = movementFunction;
     this.imageData = imageData;
+    this.killable = killable;
     this.currentFrame = 0;
     this.dead = false;
     this.t = 0;
@@ -15,7 +16,7 @@ function myImage (x, y, width, height, position, imageData, cloud, movementFunct
     this.checkConsumed = function (gravityPoints) {
         for (let point of gravityPoints) {
             let distance = Math.sqrt((point.x - (this.x + this.width / 2))**2 + (point.y - (this.y + this.height / 2))**2);
-            if (distance <= point.radius) {
+            if (this.killable && distance <= point.radius) {
                 point.radius += ((this.width + this.height) / 2) / 40;
                 point.mass += 5000000000;
                 this.dead = true;

@@ -12,8 +12,8 @@ function resizeCanvas () {
     canvas.height = window.innerHeight * 1;   // reflects value of CSS for square resolution
 }
 
-let externalImages = {spriteImage: new Image(), superMeatBoy: new Image(), planetImage: new Image(), blockImageGrass: new Image(), blockImageDirt: new Image(), blockImageBlueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), blockImageDarkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image(), speechBubble: new Image()};
-const imageCount = 16;
+let externalImages = {spriteImage: new Image(), superMeatBoy: new Image(), redPlanet: new Image(), grass: new Image(), dirt: new Image(), blueDirt: new Image(), orangeMushroom: new Image(), backgroundImage: new Image(), tree: new Image(), bushyTreeLeft: new Image(), darkDirt: new Image(), smallBush: new Image(), cloud: new Image(), topDungeonBlock: new Image(), dungeonBlock: new Image(), speechBubble: new Image(), dungeonWall1: new Image(), chest: new Image()};
+const imageCount = 18;
 let imagesLoadedCount = 0;
 var audio = {music: new Audio("audio/XilentftDiamondEyesAnimation.mp3")};
 
@@ -85,16 +85,16 @@ function loadImages () {
     externalImages.spriteImage.onload = () => {imageLoadCheck();}
     externalImages.superMeatBoy.src = "images/superMeatBoy.png";
     externalImages.superMeatBoy.onload = () => {imageLoadCheck();}
-    externalImages.planetImage.src = "images/redPlanet.svg";
-    externalImages.planetImage.onload = () => {imageLoadCheck();}
-    externalImages.blockImageGrass.src = "images/grass.png";
-    externalImages.blockImageGrass.onload = () => {imageLoadCheck();}
-    externalImages.blockImageDirt.src = "images/dirt.png";
-    externalImages.blockImageDirt.onload = () => {imageLoadCheck();}
-    externalImages.blockImageBlueDirt.src = "images/blueDirt.png";
-    externalImages.blockImageBlueDirt.onload = () => {imageLoadCheck();}
-    externalImages.blockImageDarkDirt.src = "images/darkDirt.png";
-    externalImages.blockImageDarkDirt.onload = () => {imageLoadCheck();}
+    externalImages.redPlanet.src = "images/redPlanet.svg";
+    externalImages.redPlanet.onload = () => {imageLoadCheck();}
+    externalImages.grass.src = "images/grass.png";
+    externalImages.grass.onload = () => {imageLoadCheck();}
+    externalImages.dirt.src = "images/dirt.png";
+    externalImages.dirt.onload = () => {imageLoadCheck();}
+    externalImages.blueDirt.src = "images/blueDirt.png";
+    externalImages.blueDirt.onload = () => {imageLoadCheck();}
+    externalImages.darkDirt.src = "images/darkDirt.png";
+    externalImages.darkDirt.onload = () => {imageLoadCheck();}
     externalImages.topDungeonBlock.src = "images/topDungeonBlock.png";
     externalImages.topDungeonBlock.onload = () => {imageLoadCheck();}
     externalImages.dungeonBlock.src = "images/dungeonBlock.png";
@@ -113,6 +113,10 @@ function loadImages () {
     externalImages.cloud.onload = () => {imageLoadCheck();}
     externalImages.speechBubble.src = "images/speechBubble.png";
     externalImages.speechBubble.onload = () => {imageLoadCheck();}
+    externalImages.dungeonWall1.src = "images/dungeonWall1.png";
+    externalImages.dungeonWall1.onload = () => {imageLoadCheck();}
+    externalImages.chest.src = "images/chest.png";
+    externalImages.chest.onload = () => {imageLoadCheck();}
 }
 
 function imageLoadCheck () {

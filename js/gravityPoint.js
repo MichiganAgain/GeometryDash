@@ -12,7 +12,7 @@ function GravityPoint (x, y, image, radius, mass) {
     this.setRadius = function (x) {
         // using f(x) = |7sin(5x) + this.radius|  //stretch in y-axis SF 7// //shift in y-axis + this.radius// //stretch in x-axis SF 1/5//
         x = (x / 180) * Math.PI;
-        return Math.abs(7 * Math.sin(x * 5) + this.radius);
+        return Math.abs(3 * Math.sin(x * 3) + this.radius);
     }
     
     this.draw = function (context, camera) {
