@@ -3,7 +3,7 @@ function Block (x, y, image) {
     this.y = y;
     this.image = image;
     this.SIZE = 40;
-    this.friction = 1.3;
+    this.friction = 1.4;
     this.dead = false;
     
     this.checkConsumed = function (gravityPoints) {

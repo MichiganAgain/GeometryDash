@@ -6,7 +6,7 @@ function Sprite (x, y, imageData) {
     this.yVelocity = 0;
     this.movingVelocity = 7;
     this.mass = 10;
-    this.jumpForce = 15;
+    this.jumpForce = 25;
     this.SIZE = 39;
     this.GUARD = 0.0001;
     this.canJumpUp = false;

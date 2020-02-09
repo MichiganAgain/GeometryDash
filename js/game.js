@@ -44,6 +44,7 @@ var clientX;
 var clientY;
 
 window.addEventListener("resize", resizeCanvas);
+document.oncontextmenu = function () {return false;}
 window.addEventListener("click", (event) => {
     clientX = event.clientX;
     clientY = event.clientY;
@@ -82,6 +83,7 @@ function loadImages () {
     audio.music.load();
     
     externalImages.spriteImage.src = "images/superMeatBoySpriteSheet.png";
+    //externalImages.spriteImage.src = "images/chest.png";
     externalImages.spriteImage.onload = () => {imageLoadCheck();}
     externalImages.superMeatBoy.src = "images/superMeatBoy.png";
     externalImages.superMeatBoy.onload = () => {imageLoadCheck();}
@@ -173,9 +175,9 @@ function particleCollisions (particles) {
                 const unitY = (particles[i].y - particles[x].y) / distance;
                 
                 const b1XDistance = unitX * distance / 2;
-                const b1YDistance = unitX * distance / 2;
+                const b1YDistance = unitY * distance / 2;
                 const b2XDistance = unitX * distance / 2;
-                const b2YDistance = unitX * distance / 2;
+                const b2YDistance = unitY * distance / 2;
                 
                 if (!particleBlockCollision(particles[i], b1XDistance, b1YDistance, false)) {
                     particles[i].x += b1XDistance;
