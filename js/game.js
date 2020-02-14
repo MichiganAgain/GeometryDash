@@ -18,7 +18,7 @@ let imagesLoadedCount = 0;
 var audio = {music: new Audio("audio/XilentftDiamondEyesAnimation.mp3")};
 
 const physics = {gravity: 0.98, gravitationalConstant: 6.67408*(10**-11), maxVelocity: 200};
-const maxParticles = 50;
+const maxParticles = 100;
 var mouseTrail = [];
 const maxMouseTrailLength = 10;
 var sprite;
@@ -191,10 +191,10 @@ function particleCollisions (particles) {
                 const dp1 = (particles[i].xVelocity) * unitX + (particles[i].yVelocity * unitY);
                 const dp2 = (particles[x].xVelocity) * unitX + (particles[x].yVelocity * unitY);
                 
-                particles[i].xVelocity -= unitX * dp1;
-                particles[i].yVelocity -= unitY * dp1;
-                particles[x].xVelocity -= unitX * dp2;
-                particles[x].yVelocity -= unitY * dp2;
+                particles[i].xVelocity -= unitX * dp1 * 1.5;
+                particles[i].yVelocity -= unitY * dp1 * 1.5;
+                particles[x].xVelocity -= unitX * dp2 * 1.5;
+                particles[x].yVelocity -= unitY * dp2 * 1.5;
             }
         }
     }
@@ -257,4 +257,5 @@ function animate () {
         context.arc(mouseTrail[i].x, mouseTrail[i].y, (i / maxMouseTrailLength) * 10, 0, Math.PI * 2, false);
         context.fill();
     }
+	clouds[0].x = sprite.x;
 }
